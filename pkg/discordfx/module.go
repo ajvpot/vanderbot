@@ -110,13 +110,6 @@ func instrumentSession(s *discordgo.Session, p *zap.Logger) {
 	s.AddHandler(func(s *discordgo.Session, m *discordgo.PresenceUpdate) {
 		p.Debug("PresenceUpdate", zap.Reflect("event", m))
 	})
-	s.AddHandler(func(s *discordgo.Session, m *discordgo.VoiceServerUpdate) {
-		p.Debug("VoiceServerUpdate", zap.Reflect("event", m))
-	})
-	s.AddHandler(func(s *discordgo.Session, m *discordgo.VoiceStateUpdate) {
-		p.Debug("VoiceStateUpdate", zap.Reflect("event", m))
-	})
-
 }
 
 var Module = fx.Options(fx.Provide(NewDiscordSession))
