@@ -10,6 +10,8 @@ import (
 	"go.uber.org/zap"
 )
 
+const ConfigurationKey = "discord"
+
 type HandlerFunc func(s *discordgo.Session, i *discordgo.InteractionCreate)
 
 // ApplicationCommandWithHandler is a top level Command with a Handler function.
@@ -34,11 +36,28 @@ type NewSessionResult struct {
 	Session *discordgo.Session
 }
 
+type BotConfig struct {
+	Token string
+}
+
 func NewDiscordSession(p NewSessionParams) (NewSessionResult, error) {
 	handlerMap := make(map[string]HandlerFunc)
 	registeredCommands := make([]*discordgo.ApplicationCommand, 0, len(p.Commands))
 
-	s := &discordgo.Session{Client: p.Client}
+	cfg := BotConfig{}
+
+	err := p.Config.Get(ConfigurationKey).Populate(&cfg)
+	if err != nil {
+		p.Log.Error("failed loading config", zap.Error(err))
+		return NewSessionResult{}, err
+	}
+
+	s, err := discordgo.New(cfg.Token)
+	if err != nil {
+		p.Log.Error("invalid bot parameters", zap.Error(err))
+		return NewSessionResult{}, err
+	}
+
 	instrumentSession(s, p.Log)
 
 	// Set up commands
