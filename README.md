@@ -1,5 +1,7 @@
 # Discord Utility Bot
 
+Add to server: [![Discord](https://img.shields.io/badge/Discord-%235865F2.svg?style=flat&logo=discord&logoColor=white)](https://discord.com/api/oauth2/authorize?client_id=1066509605556977724&permissions=8&scope=applications.commands%20bot)
+
 ## Configuration
 * Edit config.yml
 * Create `secrets.yml`:
