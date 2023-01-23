@@ -1,5 +1,5 @@
 discord:
-  token: Bot REPLACEME
+  token: replaceme
 
 logging:
   level: debug

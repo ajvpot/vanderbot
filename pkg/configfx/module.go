@@ -31,6 +31,12 @@ func New(p Params) (Result, error) {
 	if o := tryFile(".env"); o != nil {
 		opts = append(opts, o)
 	}
+	if o := tryFile("secrets.yml"); o != nil {
+		opts = append(opts, o)
+	}
+	if o := tryFile("secrets.yaml"); o != nil {
+		opts = append(opts, o)
+	}
 	if o := tryFile("config.yml"); o != nil {
 		opts = append(opts, o)
 	}
