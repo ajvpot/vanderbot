@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/bwmarrin/discordgo"
 	"go.uber.org/fx"
 
 	"github.com/ajvpot/vanderbot/pkg/commands/ublockfx"
@@ -19,6 +20,9 @@ func main() {
 
 		// discord
 		discordfx.Module,
+
+		// create the session always
+		fx.Invoke(func(*discordgo.Session) {}),
 	)
 
 	app.Run()

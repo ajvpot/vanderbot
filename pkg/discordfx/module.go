@@ -2,7 +2,6 @@ package discordfx
 
 import (
 	"context"
-	"net/http"
 
 	"github.com/bwmarrin/discordgo"
 	"go.uber.org/config"
@@ -16,6 +15,7 @@ type HandlerFunc func(s *discordgo.Session, i *discordgo.InteractionCreate)
 
 // ApplicationCommandWithHandler is a top level Command with a Handler function.
 // Subcommands are TODO
+// todo: define our own handler func? want to use channels to post back messages.
 type ApplicationCommandWithHandler struct {
 	Command discordgo.ApplicationCommand
 	Handler HandlerFunc
@@ -24,9 +24,8 @@ type ApplicationCommandWithHandler struct {
 
 type NewSessionParams struct {
 	fx.In
-	Commands  []*ApplicationCommandWithHandler
-	Client    *http.Client
-	Log       zap.Logger
+	Commands  []*ApplicationCommandWithHandler `group:"commands"`
+	Log       *zap.Logger
 	Lifecycle fx.Lifecycle
 	Config    config.Provider
 }
@@ -64,6 +63,7 @@ func NewDiscordSession(p NewSessionParams) (NewSessionResult, error) {
 	for _, commandHandler := range p.Commands {
 		handlerMap[commandHandler.Command.Name] = commandHandler.Handler
 		s.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+			p.Log.Debug("invoking command handler", zap.String("handlerName", i.ApplicationCommandData().Name))
 			if h, ok := handlerMap[i.ApplicationCommandData().Name]; ok {
 				h(s, i)
 			}
@@ -80,11 +80,13 @@ func NewDiscordSession(p NewSessionParams) (NewSessionResult, error) {
 			if err != nil {
 				return err
 			}
+			p.Log.Debug("registered command", zap.String("name", ccmd.Name), zap.String("id", ccmd.ID))
 			registeredCommands = append(registeredCommands, ccmd)
 		}
 		return nil
 	}, OnStop: func(ctx context.Context) error {
 		for _, v := range registeredCommands {
+			p.Log.Debug("deleting command handler", zap.String("handlerName", v.Name), zap.String("id", v.ID))
 			err := s.ApplicationCommandDelete(s.State.User.ID, v.GuildID, v.ID)
 			if err != nil {
 				p.Log.Error("failed to delete command", zap.Error(err))
@@ -98,7 +100,7 @@ func NewDiscordSession(p NewSessionParams) (NewSessionResult, error) {
 }
 
 // instrumentSession adds log handlers for the Session.
-func instrumentSession(s *discordgo.Session, p zap.Logger) {
+func instrumentSession(s *discordgo.Session, p *zap.Logger) {
 	s.AddHandler(func(s *discordgo.Session, r *discordgo.Ready) {
 		p.Info("Logged in", zap.String("username", s.State.User.Username), zap.String("discriminator", s.State.User.Discriminator))
 	})
@@ -108,6 +110,13 @@ func instrumentSession(s *discordgo.Session, p zap.Logger) {
 	s.AddHandler(func(s *discordgo.Session, m *discordgo.PresenceUpdate) {
 		p.Debug("PresenceUpdate", zap.Reflect("event", m))
 	})
+	s.AddHandler(func(s *discordgo.Session, m *discordgo.VoiceServerUpdate) {
+		p.Debug("VoiceServerUpdate", zap.Reflect("event", m))
+	})
+	s.AddHandler(func(s *discordgo.Session, m *discordgo.VoiceStateUpdate) {
+		p.Debug("VoiceStateUpdate", zap.Reflect("event", m))
+	})
+
 }
 
 var Module = fx.Options(fx.Provide(NewDiscordSession))
