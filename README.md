@@ -5,7 +5,7 @@
 * Create `secrets.yml`:
     ```yaml
     discord:
-      token: changeme
+      token: Bot changeme
     ```
 
 ## Usage
