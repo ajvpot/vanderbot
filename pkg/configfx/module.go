@@ -25,23 +25,26 @@ type Result struct {
 func New(p Params) (Result, error) {
 	var opts []config.YAMLOption
 
-	if f := os.Getenv("CONFIG_FILE"); f != "" {
-		opts = append(opts, config.File(f))
-	}
-	if o := tryFile(".env"); o != nil {
+	if o := tryFile("config.yml"); o != nil {
 		opts = append(opts, o)
 	}
+	if o := tryFile("config.yaml"); o != nil {
+		opts = append(opts, o)
+	}
+
 	if o := tryFile("secrets.yml"); o != nil {
 		opts = append(opts, o)
 	}
 	if o := tryFile("secrets.yaml"); o != nil {
 		opts = append(opts, o)
 	}
-	if o := tryFile("config.yml"); o != nil {
+
+	if o := tryFile(".env"); o != nil {
 		opts = append(opts, o)
 	}
-	if o := tryFile("config.yaml"); o != nil {
-		opts = append(opts, o)
+
+	if f := os.Getenv("CONFIG_FILE"); f != "" {
+		opts = append(opts, config.File(f))
 	}
 
 	provider, err := config.NewYAML(opts...)
