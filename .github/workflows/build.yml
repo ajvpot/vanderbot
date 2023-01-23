@@ -1,0 +1,21 @@
+name: Build and Test
+
+on:
+  push:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        go:
+          - '1.19'
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: ${{ matrix.go }}
+          cache: true
+      - run: go test ./...
+      - run: go build ./...

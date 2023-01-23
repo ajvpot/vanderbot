@@ -1,0 +1,7 @@
+discord:
+  token: replaceme
+
+logging:
+  level: debug
+  development: false
+  encoding: json
