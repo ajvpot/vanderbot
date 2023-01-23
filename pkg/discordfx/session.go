@@ -45,8 +45,10 @@ func NewDiscordSession(p NewSessionParams) (NewSessionResult, error) {
 	instrumentSession(s, p.Log)
 
 	p.Lifecycle.Append(fx.Hook{OnStart: func(ctx context.Context) error {
+		p.Log.Info("connecting")
 		return s.Open()
 	}, OnStop: func(ctx context.Context) error {
+		p.Log.Info("disconnecting")
 		return s.Close()
 	}})
 
@@ -56,7 +58,7 @@ func NewDiscordSession(p NewSessionParams) (NewSessionResult, error) {
 // instrumentSession adds log handlers for the Session.
 func instrumentSession(s *discordgo.Session, p *zap.Logger) {
 	s.AddHandler(func(s *discordgo.Session, r *discordgo.Ready) {
-		p.Info("Logged in", zap.String("username", s.State.User.Username), zap.String("discriminator", s.State.User.Discriminator))
+		p.Info("connected", zap.String("username", s.State.User.Username), zap.String("discriminator", s.State.User.Discriminator))
 	})
 	s.AddHandler(func(s *discordgo.Session, m *discordgo.MessageCreate) {
 		p.Debug("MessageCreate", zap.Reflect("event", m))

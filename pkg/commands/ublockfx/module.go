@@ -25,8 +25,8 @@ func ptr[T any](t T) *T {
 func NewCommand(p NewCommandParams) NewCommandResult {
 	return NewCommandResult{Command: &discordfx.ApplicationCommandWithHandler{
 		Command: discordgo.ApplicationCommand{
-			Name:        "ublockfx",
-			Description: "check page with ublockfx",
+			Name:        "ublock",
+			Description: "check page with ublock",
 			Options: []*discordgo.ApplicationCommandOption{
 
 				{

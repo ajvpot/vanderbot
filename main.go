@@ -2,6 +2,7 @@ package main
 
 import (
 	"go.uber.org/fx"
+	"go.uber.org/fx/fxevent"
 
 	"github.com/ajvpot/vanderbot/pkg/commands/ublockfx"
 	"github.com/ajvpot/vanderbot/pkg/configfx"
@@ -21,6 +22,10 @@ func main() {
 
 		// discord
 		discordfx.Module,
+
+		fx.WithLogger(func() fxevent.Logger {
+			return &fxevent.NopLogger
+		}),
 	)
 
 	app.Run()
