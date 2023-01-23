@@ -1,14 +1,12 @@
 # Discord Utility Bot
 
 ## Configuration
-Edit config.yml
-
-
-Create `secrets.yml`:
-```yaml
-discord:
-  token: changeme
-```
+* Edit config.yml
+* Create `secrets.yml`:
+    ```yaml
+    discord:
+      token: changeme
+    ```
 
 ## Usage
 ### Commands
