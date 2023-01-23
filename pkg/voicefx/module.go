@@ -19,7 +19,6 @@ type Result struct {
 }
 
 func Register(p Params) {
-
 	var conn *discordgo.VoiceConnection
 
 	p.Session.AddHandler(func(s *discordgo.Session, m *discordgo.VoiceServerUpdate) {
@@ -27,14 +26,5 @@ func Register(p Params) {
 	})
 	p.Session.AddHandler(func(s *discordgo.Session, m *discordgo.VoiceStateUpdate) {
 		p.Log.Debug("VoiceStateUpdate", zap.Reflect("event", m))
-		if m.ChannelID != "" {
-			var err error
-			conn, err = s.ChannelVoiceJoin(m.GuildID, m.ChannelID, true, true)
-			if err != nil {
-				p.Log.Error("failed to join voice channel", zap.Error(err))
-			}
-		} else {
-			conn.Close()
-		}
 	})
 }
