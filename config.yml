@@ -3,5 +3,5 @@ discord:
 
 logging:
   level: debug
-  development: false
-  encoding: json
+  development: true
+  encoding: console
