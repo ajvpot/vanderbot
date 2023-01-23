@@ -54,11 +54,11 @@ func RegisterCommands(p RegisterCommandsParams) error {
 		return nil
 	}, OnStop: func(ctx context.Context) error {
 		for _, v := range registeredCommands {
-			p.Log.Debug("deleting command handler", zap.String("handlerName", v.Name), zap.String("id", v.ID))
 			err := p.Session.ApplicationCommandDelete(p.Session.State.User.ID, v.GuildID, v.ID)
 			if err != nil {
 				p.Log.Error("failed to delete command", zap.Error(err))
 			}
+			p.Log.Debug("deleted command", zap.String("handlerName", v.Name), zap.String("id", v.ID))
 		}
 		return nil
 	}})
