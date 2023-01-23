@@ -19,8 +19,6 @@ type Result struct {
 }
 
 func Register(p Params) {
-	var conn *discordgo.VoiceConnection
-
 	p.Session.AddHandler(func(s *discordgo.Session, m *discordgo.VoiceServerUpdate) {
 		p.Log.Debug("VoiceServerUpdate", zap.Reflect("event", m))
 	})
