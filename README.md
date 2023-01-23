@@ -2,6 +2,8 @@
 
 ## Configuration
 Edit config.yml
+
+
 Create `secrets.yml`:
 ```yaml
 discord:
