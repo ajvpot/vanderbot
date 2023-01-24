@@ -2,7 +2,6 @@ package voicefx
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/bwmarrin/discordgo"
 	"go.uber.org/zap"
@@ -35,7 +34,6 @@ func makeHandleVoiceLeave(p Params) func(s *discordgo.Session, i *discordgo.Inte
 
 func makeHandleVoiceJoinMe(p Params) func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	return func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-		time.Sleep(time.Second * 5)
 		g, err := s.State.Guild(i.GuildID)
 		if err != nil {
 			return
