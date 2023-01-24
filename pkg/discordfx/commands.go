@@ -22,7 +22,7 @@ type ApplicationCommandWithHandler struct {
 type RegisterCommandsParams struct {
 	fx.In
 	Session   *discordgo.Session
-	Commands  []*ApplicationCommandWithHandler `group:"commands"`
+	Commands  []*ApplicationCommandWithHandler `group:"commands""`
 	Log       *zap.Logger
 	Lifecycle fx.Lifecycle
 }
