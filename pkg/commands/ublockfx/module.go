@@ -31,7 +31,7 @@ func NewCommand(p NewCommandParams) NewCommandResult {
 			Options: []*discordgo.ApplicationCommandOption{
 				{
 					Type:        discordgo.ApplicationCommandOptionString,
-					Name:        "URL",
+					Name:        "url",
 					Description: "URL to check for blocked resources.",
 					Required:    true,
 				},
