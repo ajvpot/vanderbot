@@ -41,7 +41,7 @@ Check what resources are blocked from loading on a page by uBlock Origin
     * https://github.com/xthexder/go-jack
     * windows? https://jackaudio.org/faq/jack_on_windows.html
 * [ ] Add functionality to discordgo for tracking ssrc (?)
-
+* [ ] Log spotify presence
 
 * https://github.com/bwmarrin/discordgo/blob/master/examples/voice_receive/main.go
 * yeet the user's discord token out of browser profile for local operation?
