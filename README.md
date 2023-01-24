@@ -34,6 +34,7 @@ Check what resources are blocked from loading on a page by uBlock Origin
 * [ ] Voice helper
   * [ ] Speaker identification
   * [ ] Decoding https://github.com/bwmarrin/dgvoice
+  * [ ] Map SSRC to users from speaking updates
   * [ ] JACK Output
     * https://github.com/xthexder/go-jack
     * windows? https://jackaudio.org/faq/jack_on_windows.html
