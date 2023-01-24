@@ -27,13 +27,12 @@ func NewCommand(p NewCommandParams) NewCommandResult {
 	return NewCommandResult{Command: &discordfx.ApplicationCommandWithHandler{
 		Command: discordgo.ApplicationCommand{
 			Name:        "ublock",
-			Description: "check page with ublock",
+			Description: "Generate a report of resources blocked by uBlock Origin.",
 			Options: []*discordgo.ApplicationCommandOption{
-
 				{
 					Type:        discordgo.ApplicationCommandOptionString,
-					Name:        "url",
-					Description: "url",
+					Name:        "URL",
+					Description: "URL to check for blocked resources.",
 					Required:    true,
 				},
 			},
@@ -57,7 +56,7 @@ func NewCommand(p NewCommandParams) NewCommandResult {
 
 			time.AfterFunc(time.Second, func() {
 				s.InteractionResponseEdit(i.Interaction, &discordgo.WebhookEdit{
-					Content: ptr(optionMap["url"].StringValue()),
+					Content: ptr(optionMap["URL"].StringValue()),
 				})
 			})
 		},
