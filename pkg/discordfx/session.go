@@ -44,6 +44,10 @@ func NewDiscordSession(p NewSessionParams) (NewSessionResult, error) {
 
 	instrumentSession(s, p.Log)
 
+	if t, err := ParseToken(cfg.Token); err == nil {
+		p.Log.Info("OAuth URL", zap.String("url", GenerateOAuthURL(t)))
+	}
+
 	p.Lifecycle.Append(fx.Hook{OnStart: func(ctx context.Context) error {
 		p.Log.Info("connecting")
 		return s.Open()
