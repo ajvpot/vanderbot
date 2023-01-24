@@ -28,6 +28,21 @@ type RegisterCommandsParams struct {
 	Lifecycle fx.Lifecycle
 }
 
+type interactionHelper struct {
+	i *discordgo.InteractionCreate
+}
+
+type InteractionHelper interface {
+	GetContext() context.Context
+	GetInteraction() *discordgo.InteractionCreate
+	Respond() (<-chan *discordgo.WebhookEdit, error)
+	RespondWebhook() (<-chan *discordgo.WebhookEdit, error)
+}
+
+func NewInteractionHelper(i *discordgo.InteractionCreate) InteractionHelper {
+	return &interactionHelper{i: i}
+}
+
 func RegisterCommands(p RegisterCommandsParams) error {
 	handlerMap := make(map[string]HandlerFunc)
 	registeredCommands := make([]*discordgo.ApplicationCommand, 0, len(p.Commands))
