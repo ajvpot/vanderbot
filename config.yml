@@ -1,5 +1,7 @@
 discord:
   token: replaceme
+  intent: 32767 # IntentsAll
+
 
 logging:
   level: debug

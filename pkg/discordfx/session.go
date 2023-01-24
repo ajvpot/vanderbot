@@ -24,7 +24,8 @@ type NewSessionResult struct {
 }
 
 type BotConfig struct {
-	Token string
+	Token  string
+	Intent discordgo.Intent
 }
 
 func NewDiscordSession(p NewSessionParams) (NewSessionResult, error) {
@@ -40,6 +41,10 @@ func NewDiscordSession(p NewSessionParams) (NewSessionResult, error) {
 	if err != nil {
 		p.Log.Error("invalid bot parameters", zap.Error(err))
 		return NewSessionResult{}, err
+	}
+
+	if cfg.Intent > 0 {
+		s.Identify.Intents = cfg.Intent
 	}
 
 	instrumentSession(s, p.Log)
