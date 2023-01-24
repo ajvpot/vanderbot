@@ -1,5 +1,5 @@
 discord:
-  token: replaceme
+  token: ${DISCORD_BOT_TOKEN}
 
 logging:
   level: debug

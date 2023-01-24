@@ -22,8 +22,14 @@ type Result struct {
 	Provider config.Provider
 }
 
+func envLookup(v string) (string, bool) {
+	return os.LookupEnv(v)
+}
+
 func New(p Params) (Result, error) {
-	var opts []config.YAMLOption
+	var opts = []config.YAMLOption{
+		config.Expand(envLookup),
+	}
 
 	if o := tryFile("config.yml"); o != nil {
 		opts = append(opts, o)
