@@ -1,6 +1,7 @@
 # prod config
 discord:
   token: ${DISCORD_BOT_TOKEN}
+  intent: 32767 # IntentsAll
 
 logging:
   level: info
