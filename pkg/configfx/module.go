@@ -35,7 +35,10 @@ func New(p Params) (Result, error) {
 
 	opts = append(opts, tryFiles(".env")...)
 
-	opts = append(opts, tryFiles("config")...)
+	opts = append(opts, tryFiles("base")...)
+	if runtimeEnv := os.Getenv("RUNTIME_ENVIRONMENT"); runtimeEnv != "" {
+		opts = append(opts, tryFiles(runtimeEnv)...)
+	}
 	opts = append(opts, tryFiles("secrets")...)
 
 	if f := os.Getenv("CONFIG_FILE"); f != "" {
@@ -48,10 +51,10 @@ func New(p Params) (Result, error) {
 }
 
 func tryFiles(name string) (out []config.YAMLOption) {
-	if o := tryFile(fmt.Sprintf("%s.yml", name)); o != nil {
+	if o := tryFile(fmt.Sprintf("config/%s.yml", name)); o != nil {
 		out = append(out, o)
 	}
-	if o := tryFile(fmt.Sprintf("%s.yaml", name)); o != nil {
+	if o := tryFile(fmt.Sprintf("config/%s.yaml", name)); o != nil {
 		out = append(out, o)
 	}
 	if kdp := os.Getenv("KO_DATA_PATH"); kdp != "" {
@@ -59,6 +62,14 @@ func tryFiles(name string) (out []config.YAMLOption) {
 			out = append(out, o)
 		}
 		if o := tryFile(path.Join(kdp, fmt.Sprintf("%s.yml", name))); o != nil {
+			out = append(out, o)
+		}
+	}
+	if configdir := os.Getenv("CONFIG_DIR"); configdir != "" {
+		if o := tryFile(path.Join(configdir, fmt.Sprintf("%s.yaml", name))); o != nil {
+			out = append(out, o)
+		}
+		if o := tryFile(path.Join(configdir, fmt.Sprintf("%s.yml", name))); o != nil {
 			out = append(out, o)
 		}
 	}
