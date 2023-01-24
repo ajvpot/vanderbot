@@ -29,6 +29,8 @@ Check what resources are blocked from loading on a page by uBlock Origin
 
 
 ## TODO
+* [ ] HTTP Server
+  * [ ] Health check
 * [ ] Interaction helper
   * [ ] Integrate ublock command
 * [ ] Voice helper
