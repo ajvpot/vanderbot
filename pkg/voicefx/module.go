@@ -8,7 +8,7 @@ import (
 	"github.com/ajvpot/vanderbot/pkg/discordfx"
 )
 
-var Module = fx.Options(fx.Provide(Register))
+var Module = fx.Options(fx.Provide(New))
 
 type Params struct {
 	fx.In
@@ -22,7 +22,7 @@ type Result struct {
 	Commands []*discordfx.ApplicationCommandWithHandler `group:"commands,flatten"`
 }
 
-func Register(p Params) Result {
+func New(p Params) Result {
 	p.Session.AddHandler(func(s *discordgo.Session, m *discordgo.VoiceServerUpdate) {
 		p.Log.Debug("VoiceServerUpdate", zap.Reflect("event", m))
 	})

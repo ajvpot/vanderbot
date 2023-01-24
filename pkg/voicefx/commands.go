@@ -2,6 +2,7 @@ package voicefx
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 	"go.uber.org/zap"
@@ -16,6 +17,7 @@ func makeHandleVoiceLeave(p Params) func(s *discordgo.Session, i *discordgo.Inte
 				Type: discordgo.InteractionResponseChannelMessageWithSource,
 				Data: &discordgo.InteractionResponseData{
 					Content: "i'm not in your channel",
+					Flags:   discordgo.MessageFlagsEphemeral,
 				},
 			})
 			return
@@ -25,6 +27,7 @@ func makeHandleVoiceLeave(p Params) func(s *discordgo.Session, i *discordgo.Inte
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
 				Content: "ok",
+				Flags:   discordgo.MessageFlagsEphemeral,
 			},
 		})
 	}
@@ -32,6 +35,7 @@ func makeHandleVoiceLeave(p Params) func(s *discordgo.Session, i *discordgo.Inte
 
 func makeHandleVoiceJoinMe(p Params) func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	return func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+		time.Sleep(time.Second * 5)
 		g, err := s.State.Guild(i.GuildID)
 		if err != nil {
 			return
@@ -53,6 +57,7 @@ func makeHandleVoiceJoinMe(p Params) func(s *discordgo.Session, i *discordgo.Int
 				Type: discordgo.InteractionResponseChannelMessageWithSource,
 				Data: &discordgo.InteractionResponseData{
 					Content: fmt.Sprintf("ok"),
+					Flags:   discordgo.MessageFlagsEphemeral,
 				},
 			})
 			return
@@ -62,6 +67,7 @@ func makeHandleVoiceJoinMe(p Params) func(s *discordgo.Session, i *discordgo.Int
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
 				Content: fmt.Sprintf("are you in a voice channel?"),
+				Flags:   discordgo.MessageFlagsEphemeral,
 			},
 		})
 	}
