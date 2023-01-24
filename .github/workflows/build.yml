@@ -8,19 +8,13 @@ env:
 
 jobs:
   build:
-    strategy:
-      matrix:
-        go:
-          - '1.19'
-        os:
-          - ubuntu-latest
-          #- windows-latest
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: imjasonh/setup-ko@v0.6
       - uses: actions/setup-go@v3
         with:
-          go-version: ${{ matrix.go }}
+          go-version: 1.19
           cache: true
       - name: Configure git for private modules
         env:
@@ -28,19 +22,8 @@ jobs:
         run: git config --global url."https://YOUR_GITHUB_USERNAME:${TOKEN}@github.com".insteadOf "https://github.com"
       - run: go test ./...
       - run: go build ./...
-  deploy:
-    needs: build
-    concurrency: release
-    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      - uses: actions/checkout@v3
-      - name: Configure git for private modules
-        env:
-          TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-        run: git config --global url."https://YOUR_GITHUB_USERNAME:${TOKEN}@github.com".insteadOf "https://github.com"
-      - uses: imjasonh/setup-ko@v0.6
       - run: ko build -B
+        if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+        permissions:
+          contents: read
+          packages: write
