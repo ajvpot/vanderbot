@@ -1,4 +1,4 @@
-name: Build and Test
+name: Build
 
 on:
   push:
@@ -19,3 +19,13 @@ jobs:
           cache: true
       - run: go test ./...
       - run: go build ./...
+  deploy:
+    if: ${{ always() && format('refs/heads/{0}', ) == github.ref }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v3
+      - uses: imjasonh/setup-ko@v0.6
+      - run: ko build
