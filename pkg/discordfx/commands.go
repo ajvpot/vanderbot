@@ -2,6 +2,7 @@ package discordfx
 
 import (
 	"context"
+	"log"
 
 	"github.com/bwmarrin/discordgo"
 	"go.uber.org/fx"
@@ -53,6 +54,10 @@ func RegisterCommands(p RegisterCommandsParams) error {
 		}
 		return nil
 	}, OnStop: func(ctx context.Context) error {
+		registeredCommands, err := p.Session.ApplicationCommands(p.Session.State.User.ID, "")
+		if err != nil {
+			log.Fatalf("Could not fetch registered commands: %v", err)
+		}
 		for _, v := range registeredCommands {
 			err := p.Session.ApplicationCommandDelete(p.Session.State.User.ID, v.GuildID, v.ID)
 			if err != nil {

@@ -31,13 +31,13 @@ func New(p Params) Result {
 	})
 	return Result{Commands: []*discordfx.ApplicationCommandWithHandler{{
 		Command: discordgo.ApplicationCommand{
-			Name:        "voicejoinme",
+			Name:        "join",
 			Description: "join your voice server",
 		},
 		Handler: makeHandleVoiceJoinMe(p),
 	}, {
 		Command: discordgo.ApplicationCommand{
-			Name:        "voiceleave",
+			Name:        "leave",
 			Description: "leave your voice channel",
 		},
 		Handler: makeHandleVoiceLeave(p),
