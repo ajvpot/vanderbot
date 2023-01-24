@@ -40,7 +40,8 @@ type InteractionHelper interface {
 }
 
 func NewInteractionHelper(i *discordgo.InteractionCreate) InteractionHelper {
-	return &interactionHelper{i: i}
+	//return &interactionHelper{i: i}
+	return nil
 }
 
 func RegisterCommands(p RegisterCommandsParams) error {
