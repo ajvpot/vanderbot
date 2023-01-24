@@ -1,6 +1,7 @@
 package ublockfx
 
 import (
+	"context"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
@@ -26,18 +27,17 @@ func NewCommand(p NewCommandParams) NewCommandResult {
 	return NewCommandResult{Command: &discordfx.ApplicationCommandWithHandler{
 		Command: discordgo.ApplicationCommand{
 			Name:        "ublock",
-			Description: "check page with ublock",
+			Description: "Generate a report of resources blocked by uBlock Origin.",
 			Options: []*discordgo.ApplicationCommandOption{
-
 				{
 					Type:        discordgo.ApplicationCommandOptionString,
-					Name:        "url",
-					Description: "url",
+					Name:        "URL",
+					Description: "URL to check for blocked resources.",
 					Required:    true,
 				},
 			},
 		},
-		Handler: func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+		Handler: func(ctx context.Context, s *discordgo.Session, i *discordgo.InteractionCreate) {
 			// Access options in the order provided by the user.
 			options := i.ApplicationCommandData().Options
 
@@ -50,12 +50,13 @@ func NewCommand(p NewCommandParams) NewCommandResult {
 			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 				Type: discordgo.InteractionResponseChannelMessageWithSource,
 				Data: &discordgo.InteractionResponseData{
-					Content: "Hey there! Congratulations, you just executed your first slash command",
+					Content: "Doing the thing",
 				},
 			})
+
 			time.AfterFunc(time.Second, func() {
 				s.InteractionResponseEdit(i.Interaction, &discordgo.WebhookEdit{
-					Content: ptr(optionMap["url"].StringValue()),
+					Content: ptr(optionMap["URL"].StringValue()),
 				})
 			})
 		},

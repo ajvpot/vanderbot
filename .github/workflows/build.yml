@@ -3,13 +3,18 @@ name: Build
 on:
   push:
 
+env:
+  GOPRIVATE: "github.com"
+
 jobs:
   build:
     strategy:
       matrix:
         go:
           - '1.19'
-        os: [ubuntu-latest, windows-latest]
+        os:
+          - ubuntu-latest
+          #- windows-latest
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -17,6 +22,10 @@ jobs:
         with:
           go-version: ${{ matrix.go }}
           cache: true
+      - name: Configure git for private modules
+        env:
+          TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        run: git config --global url."https://YOUR_GITHUB_USERNAME:${TOKEN}@github.com".insteadOf "https://github.com"
       - run: go test ./...
       - run: go build ./...
   deploy:

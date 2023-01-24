@@ -1,15 +1,15 @@
 package voicefx
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/bwmarrin/discordgo"
 	"go.uber.org/zap"
 )
 
-func makeHandleVoiceLeave(p Params) func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	return func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-		p.Log.Debug("voiceleave")
+func makeHandleVoiceLeave(p Params) func(ctx context.Context, s *discordgo.Session, i *discordgo.InteractionCreate) {
+	return func(ctx context.Context, s *discordgo.Session, i *discordgo.InteractionCreate) {
 		vc, ok := s.VoiceConnections[i.GuildID]
 		if !ok {
 			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
@@ -32,8 +32,8 @@ func makeHandleVoiceLeave(p Params) func(s *discordgo.Session, i *discordgo.Inte
 	}
 }
 
-func makeHandleVoiceJoinMe(p Params) func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	return func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+func makeHandleVoiceJoinMe(p Params) func(ctx context.Context, s *discordgo.Session, i *discordgo.InteractionCreate) {
+	return func(ctx context.Context, s *discordgo.Session, i *discordgo.InteractionCreate) {
 		g, err := s.State.Guild(i.GuildID)
 		if err != nil {
 			return

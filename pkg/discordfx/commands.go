@@ -3,13 +3,14 @@ package discordfx
 import (
 	"context"
 	"log"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 )
 
-type HandlerFunc func(s *discordgo.Session, i *discordgo.InteractionCreate)
+type HandlerFunc func(ctx context.Context, s *discordgo.Session, i *discordgo.InteractionCreate)
 
 // ApplicationCommandWithHandler is a top level Command with a Handler function.
 // Subcommands are TODO
@@ -28,17 +29,37 @@ type RegisterCommandsParams struct {
 	Lifecycle fx.Lifecycle
 }
 
+type interactionHelper struct {
+	i *discordgo.InteractionCreate
+}
+
+type InteractionHelper interface {
+	GetInteraction() *discordgo.InteractionCreate
+	Respond() (<-chan *discordgo.WebhookEdit, error)
+	RespondWebhook() (<-chan *discordgo.WebhookEdit, error)
+}
+
+func NewInteractionHelper(i *discordgo.InteractionCreate) InteractionHelper {
+	//return &interactionHelper{i: i}
+	return nil
+}
+
 func RegisterCommands(p RegisterCommandsParams) error {
 	handlerMap := make(map[string]HandlerFunc)
 	registeredCommands := make([]*discordgo.ApplicationCommand, 0, len(p.Commands))
+
+	ctx, cancel := context.WithCancel(context.Background())
 
 	// Set up commands
 	for _, commandHandler := range p.Commands {
 		handlerMap[commandHandler.Command.Name] = commandHandler.Handler
 		p.Session.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+			ctx, cancel := context.WithTimeout(ctx, time.Second*15)
+			defer cancel()
+
 			p.Log.Debug("invoking command handler", zap.String("handlerName", i.ApplicationCommandData().Name))
 			if h, ok := handlerMap[i.ApplicationCommandData().Name]; ok {
-				h(s, i)
+				h(ctx, s, i)
 			}
 		})
 	}
@@ -54,6 +75,7 @@ func RegisterCommands(p RegisterCommandsParams) error {
 		}
 		return nil
 	}, OnStop: func(ctx context.Context) error {
+		cancel()
 		registeredCommands, err := p.Session.ApplicationCommands(p.Session.State.User.ID, "")
 		if err != nil {
 			log.Fatalf("Could not fetch registered commands: %v", err)
