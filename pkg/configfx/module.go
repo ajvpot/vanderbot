@@ -33,9 +33,9 @@ func New(p Params) (Result, error) {
 		config.Expand(envLookup),
 	}
 
+	opts = append(opts, tryFiles(".env")...)
 	opts = append(opts, tryFiles("secrets")...)
 	opts = append(opts, tryFiles("config")...)
-	opts = append(opts, tryFiles(".env")...)
 
 	if f := os.Getenv("CONFIG_FILE"); f != "" {
 		opts = append(opts, config.File(f))
