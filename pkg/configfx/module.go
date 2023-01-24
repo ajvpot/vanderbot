@@ -1,7 +1,9 @@
 package configfx
 
 import (
+	"fmt"
 	"os"
+	"path"
 
 	"go.uber.org/config"
 	"go.uber.org/fx"
@@ -31,23 +33,9 @@ func New(p Params) (Result, error) {
 		config.Expand(envLookup),
 	}
 
-	if o := tryFile("config.yml"); o != nil {
-		opts = append(opts, o)
-	}
-	if o := tryFile("config.yaml"); o != nil {
-		opts = append(opts, o)
-	}
-
-	if o := tryFile("secrets.yml"); o != nil {
-		opts = append(opts, o)
-	}
-	if o := tryFile("secrets.yaml"); o != nil {
-		opts = append(opts, o)
-	}
-
-	if o := tryFile(".env"); o != nil {
-		opts = append(opts, o)
-	}
+	opts = append(opts, tryFiles("secrets")...)
+	opts = append(opts, tryFiles("config")...)
+	opts = append(opts, tryFiles(".env")...)
 
 	if f := os.Getenv("CONFIG_FILE"); f != "" {
 		opts = append(opts, config.File(f))
@@ -56,6 +44,24 @@ func New(p Params) (Result, error) {
 	provider, err := config.NewYAML(opts...)
 
 	return Result{Provider: provider}, err
+}
+
+func tryFiles(name string) (out []config.YAMLOption) {
+	if o := tryFile(fmt.Sprintf("%s.yml", name)); o != nil {
+		out = append(out, o)
+	}
+	if o := tryFile(fmt.Sprintf("%s.yaml", name)); o != nil {
+		out = append(out, o)
+	}
+	if kdp := os.Getenv("KO_DATA_PATH"); kdp != "" {
+		if o := tryFile(path.Join(kdp, fmt.Sprintf("%s.yaml", name))); o != nil {
+			out = append(out, o)
+		}
+		if o := tryFile(path.Join(kdp, fmt.Sprintf("%s.yml", name))); o != nil {
+			out = append(out, o)
+		}
+	}
+	return out
 }
 
 func tryFile(path string) config.YAMLOption {

@@ -1,0 +1,8 @@
+# prod config
+discord:
+  token: ${DISCORD_BOT_TOKEN}
+
+logging:
+  level: info
+  development: false
+  encoding: json
