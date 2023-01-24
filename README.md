@@ -27,6 +27,14 @@ Check what resources are blocked from loading on a page by uBlock Origin
 * Option to output to separate audio outputs live for OBS etc.
     * is there some library for ipc audio?
 * references
-  * https://github.com/bwmarrin/dgvoice
   * https://github.com/xthexder/go-jack
   * windows? https://jackaudio.org/faq/jack_on_windows.html
+
+
+## TODO
+* [ ] Interaction helper
+  * [ ] Integrate ublock command
+* [ ] Voice helper
+  * [ ] Speaker identification
+  * [ ] Decoding https://github.com/bwmarrin/dgvoice
+  * [ ] JACK Output 
