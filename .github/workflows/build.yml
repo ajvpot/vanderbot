@@ -28,5 +28,5 @@ jobs:
       - run: |-
           mkdir -p cmd/vanderbot/kodata/
           cp cmd/vanderbot/config/* cmd/vanderbot/kodata/
-          ko build -P
+          ko build -P cmd/vanderbot
         if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
