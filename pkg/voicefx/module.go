@@ -22,9 +22,13 @@ type Result struct {
 	Commands []*discordfx.ApplicationCommandWithHandler `group:"commands,flatten"`
 }
 
+type voiceManagerState struct {
+	Recording bool
+}
 type voiceManager struct {
 	Session *discordgo.Session
 	Log     *zap.Logger
+	state   map[string]voiceManagerState
 }
 
 func New(p Params) Result {
@@ -40,10 +44,10 @@ func New(p Params) Result {
 		Log:     p.Log,
 	}
 
-	return Result{Commands: vm.buildCommands()}
+	return Result{Commands: vm.commands()}
 }
 
-func (p *voiceManager) buildCommands() []*discordfx.ApplicationCommandWithHandler {
+func (p *voiceManager) commands() []*discordfx.ApplicationCommandWithHandler {
 	return []*discordfx.ApplicationCommandWithHandler{{
 		Command: discordgo.ApplicationCommand{
 			Name:        "join",

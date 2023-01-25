@@ -2,13 +2,36 @@ package voicefx
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/bwmarrin/discordgo"
-	"go.uber.org/zap"
 )
 
-func (p *voiceManager) leaveme(ctx context.Context, s *discordgo.Session, i *discordgo.InteractionCreate) {
+func (r *recordingManager) stop(ctx context.Context, s *discordgo.Session, i *discordgo.InteractionCreate) {
+	stop, ok := r.recordingStopTriggers[i.GuildID]
+	if !ok {
+		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+			Type: discordgo.InteractionResponseChannelMessageWithSource,
+			Data: &discordgo.InteractionResponseData{
+				Content: "i'm not recording",
+				Flags:   discordgo.MessageFlagsEphemeral,
+			},
+		})
+		return
+	}
+
+	<-stop
+
+	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+		Type: discordgo.InteractionResponseChannelMessageWithSource,
+		Data: &discordgo.InteractionResponseData{
+			Content: "ok",
+			Flags:   discordgo.MessageFlagsEphemeral,
+		},
+	})
+	return
+}
+
+func (r *recordingManager) record(ctx context.Context, s *discordgo.Session, i *discordgo.InteractionCreate) {
 	vc, ok := s.VoiceConnections[i.GuildID]
 	if !ok {
 		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
@@ -20,7 +43,21 @@ func (p *voiceManager) leaveme(ctx context.Context, s *discordgo.Session, i *dis
 		})
 		return
 	}
-	vc.Disconnect()
+
+	if _, recording := r.recordingStopTriggers[i.GuildID]; recording {
+		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+			Type: discordgo.InteractionResponseChannelMessageWithSource,
+			Data: &discordgo.InteractionResponseData{
+				Content: "i'm already recording",
+				Flags:   discordgo.MessageFlagsEphemeral,
+			},
+		})
+	}
+
+	stop := make(chan struct{})
+	r.recordingStopTriggers[i.GuildID] = stop
+	go r.handleVoice(vc.OpusRecv, stop)
+
 	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
@@ -28,47 +65,5 @@ func (p *voiceManager) leaveme(ctx context.Context, s *discordgo.Session, i *dis
 			Flags:   discordgo.MessageFlagsEphemeral,
 		},
 	})
-
-}
-
-func (p *voiceManager) joinme(ctx context.Context, s *discordgo.Session, i *discordgo.InteractionCreate) {
-	g, err := s.State.Guild(i.GuildID)
-	if err != nil {
-		return
-	}
-
-	userChannel := findChannel(g, i)
-	if userChannel == "" {
-		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-			Type: discordgo.InteractionResponseChannelMessageWithSource,
-			Data: &discordgo.InteractionResponseData{
-				Content: fmt.Sprintf("are you in a voice channel?"),
-				Flags:   discordgo.MessageFlagsEphemeral,
-			},
-		})
-		return
-	}
-
-	cv, _ := s.ChannelVoiceJoin(i.GuildID, userChannel, true, false)
-	cv.AddHandler(func(vc *discordgo.VoiceConnection, vs *discordgo.VoiceSpeakingUpdate) {
-		p.Log.Debug("voiceSpeakingUpdate", zap.Reflect("gid", vc.GuildID), zap.Reflect("cid", vc.ChannelID), zap.Reflect("speaking", vs))
-	})
-
-	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-		Type: discordgo.InteractionResponseChannelMessageWithSource,
-		Data: &discordgo.InteractionResponseData{
-			Content: fmt.Sprintf("ok"),
-			Flags:   discordgo.MessageFlagsEphemeral,
-		},
-	})
 	return
-}
-
-func findChannel(g *discordgo.Guild, i *discordgo.InteractionCreate) string {
-	for _, vs := range g.VoiceStates {
-		if vs.UserID == i.Member.User.ID {
-			return vs.ChannelID
-		}
-	}
-	return ""
 }
