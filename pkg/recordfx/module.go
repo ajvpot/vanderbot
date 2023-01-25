@@ -1,4 +1,4 @@
-package voicefx
+package recordfx
 
 import (
 	"github.com/bwmarrin/discordgo"
@@ -30,8 +30,9 @@ type recordingManager struct {
 
 func New(p Params) Result {
 	vm := recordingManager{
-		Session: p.Session,
-		Log:     p.Log,
+		Session:               p.Session,
+		Log:                   p.Log,
+		recordingStopTriggers: make(map[string]chan struct{}),
 	}
 
 	return Result{Commands: vm.commands()}

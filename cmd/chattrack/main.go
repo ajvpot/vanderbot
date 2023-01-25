@@ -8,6 +8,7 @@ import (
 
 	"github.com/ajvpot/vanderbot/pkg/configfx"
 	"github.com/ajvpot/vanderbot/pkg/discordfx"
+	"github.com/ajvpot/vanderbot/pkg/recordfx"
 	"github.com/ajvpot/vanderbot/pkg/voicefx"
 	"github.com/ajvpot/vanderbot/pkg/zapfx"
 )
@@ -35,6 +36,7 @@ func main() {
 
 		// commands
 		voicefx.Module,
+		recordfx.Module,
 
 		// discord
 		discordfx.Module,

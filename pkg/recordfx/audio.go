@@ -1,4 +1,4 @@
-package voicefx
+package recordfx
 
 import (
 	"fmt"
@@ -24,7 +24,7 @@ func createPionRTPPacket(p *discordgo.Packet) *rtp.Packet {
 }
 
 // todo select stop channel
-func (r *recordingManager) handleVoice(c chan *discordgo.Packet, stop <-chan struct{}) {
+func (r *recordingManager) handleVoice(c <-chan *discordgo.Packet, stop <-chan struct{}) {
 	files := make(map[uint32]media.Writer)
 	for p := range c {
 		file, ok := files[p.SSRC]
