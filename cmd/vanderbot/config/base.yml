@@ -1,9 +1,9 @@
-# prod config
 discord:
   token: ${DISCORD_BOT_TOKEN}
   intent: 32767 # IntentsAll
 
+
 logging:
-  level: info
-  development: false
-  encoding: json
+  level: debug
+  development: true
+  encoding: console

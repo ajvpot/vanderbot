@@ -1,9 +1,0 @@
-discord:
-  token: replaceme
-  intent: 32767 # IntentsAll
-
-
-logging:
-  level: debug
-  development: true
-  encoding: console

@@ -1,0 +1,4 @@
+logging:
+  level: info
+  development: false
+  encoding: json
