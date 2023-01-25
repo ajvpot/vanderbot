@@ -22,6 +22,11 @@ type Result struct {
 	Commands []*discordfx.ApplicationCommandWithHandler `group:"commands,flatten"`
 }
 
+type voiceManager struct {
+	Session *discordgo.Session
+	Log     *zap.Logger
+}
+
 func New(p Params) Result {
 	p.Session.AddHandler(func(s *discordgo.Session, m *discordgo.VoiceServerUpdate) {
 		p.Log.Debug("VoiceServerUpdate", zap.Reflect("event", m))
@@ -29,17 +34,27 @@ func New(p Params) Result {
 	p.Session.AddHandler(func(s *discordgo.Session, m *discordgo.VoiceStateUpdate) {
 		p.Log.Debug("VoiceStateUpdate", zap.Reflect("event", m))
 	})
-	return Result{Commands: []*discordfx.ApplicationCommandWithHandler{{
+
+	vm := voiceManager{
+		Session: p.Session,
+		Log:     p.Log,
+	}
+
+	return Result{Commands: vm.buildCommands()}
+}
+
+func (p *voiceManager) buildCommands() []*discordfx.ApplicationCommandWithHandler {
+	return []*discordfx.ApplicationCommandWithHandler{{
 		Command: discordgo.ApplicationCommand{
 			Name:        "join",
 			Description: "Join your voice channel.",
 		},
-		Handler: makeHandleVoiceJoinMe(p),
+		Handler: p.joinme,
 	}, {
 		Command: discordgo.ApplicationCommand{
 			Name:        "leave",
 			Description: "Leave your voice channel.",
 		},
-		Handler: makeHandleVoiceLeave(p),
-	}}}
+		Handler: p.leaveme,
+	}}
 }
