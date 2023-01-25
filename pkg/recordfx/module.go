@@ -23,8 +23,9 @@ type Result struct {
 }
 
 type recordingManager struct {
-	Session *discordgo.Session
-	Log     *zap.Logger
+	Session               *discordgo.Session
+	Log                   *zap.Logger
+	recordingStopTriggers map[string]chan struct{}
 }
 
 func New(p Params) Result {
@@ -36,18 +37,18 @@ func New(p Params) Result {
 	return Result{Commands: vm.commands()}
 }
 
-func (p *recordingManager) commands() []*discordfx.ApplicationCommandWithHandler {
+func (r *recordingManager) commands() []*discordfx.ApplicationCommandWithHandler {
 	return []*discordfx.ApplicationCommandWithHandler{{
 		Command: discordgo.ApplicationCommand{
 			Name:        "record",
-			Description: "Record.",
+			Description: "Start recording.",
 		},
-		Handler: p.record,
+		Handler: r.record,
 	}, {
 		Command: discordgo.ApplicationCommand{
 			Name:        "stop",
 			Description: "Stop recording.",
 		},
-		Handler: p.stop,
+		Handler: r.stop,
 	}}
 }
