@@ -37,33 +37,38 @@ func (p *voiceManager) joinme(ctx context.Context, s *discordgo.Session, i *disc
 		return
 	}
 
-	found := false
-	for _, vs := range g.VoiceStates {
-		if vs.UserID == i.Member.User.ID {
-			cv, _ := s.ChannelVoiceJoin(i.GuildID, vs.ChannelID, true, false)
-			cv.AddHandler(func(vc *discordgo.VoiceConnection, vs *discordgo.VoiceSpeakingUpdate) {
-				p.Log.Debug("voiceSpeakingUpdate", zap.Reflect("gid", vc.GuildID), zap.Reflect("cid", vc.ChannelID), zap.Reflect("speaking", vs))
-			})
-			found = true
-		}
-	}
-
-	if found {
+	userChannel := findChannel(g, i)
+	if userChannel == "" {
 		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
-				Content: fmt.Sprintf("ok"),
+				Content: fmt.Sprintf("are you in a voice channel?"),
 				Flags:   discordgo.MessageFlagsEphemeral,
 			},
 		})
 		return
 	}
 
+	cv, _ := s.ChannelVoiceJoin(i.GuildID, userChannel, true, false)
+	cv.AddHandler(func(vc *discordgo.VoiceConnection, vs *discordgo.VoiceSpeakingUpdate) {
+		p.Log.Debug("voiceSpeakingUpdate", zap.Reflect("gid", vc.GuildID), zap.Reflect("cid", vc.ChannelID), zap.Reflect("speaking", vs))
+	})
+
 	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
-			Content: fmt.Sprintf("are you in a voice channel?"),
+			Content: fmt.Sprintf("ok"),
 			Flags:   discordgo.MessageFlagsEphemeral,
 		},
 	})
+	return
+}
+
+func findChannel(g *discordgo.Guild, i *discordgo.InteractionCreate) string {
+	for _, vs := range g.VoiceStates {
+		if vs.UserID == i.Member.User.ID {
+			return vs.ChannelID
+		}
+	}
+	return ""
 }

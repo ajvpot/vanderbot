@@ -22,24 +22,13 @@ type Result struct {
 	Commands []*discordfx.ApplicationCommandWithHandler `group:"commands,flatten"`
 }
 
-type voiceManagerState struct {
-	Recording bool
-}
-type voiceManager struct {
+type recordingManager struct {
 	Session *discordgo.Session
 	Log     *zap.Logger
-	state   map[string]voiceManagerState
 }
 
 func New(p Params) Result {
-	p.Session.AddHandler(func(s *discordgo.Session, m *discordgo.VoiceServerUpdate) {
-		p.Log.Debug("VoiceServerUpdate", zap.Reflect("event", m))
-	})
-	p.Session.AddHandler(func(s *discordgo.Session, m *discordgo.VoiceStateUpdate) {
-		p.Log.Debug("VoiceStateUpdate", zap.Reflect("event", m))
-	})
-
-	vm := voiceManager{
+	vm := recordingManager{
 		Session: p.Session,
 		Log:     p.Log,
 	}
@@ -47,18 +36,18 @@ func New(p Params) Result {
 	return Result{Commands: vm.commands()}
 }
 
-func (p *voiceManager) commands() []*discordfx.ApplicationCommandWithHandler {
+func (p *recordingManager) commands() []*discordfx.ApplicationCommandWithHandler {
 	return []*discordfx.ApplicationCommandWithHandler{{
 		Command: discordgo.ApplicationCommand{
-			Name:        "join",
-			Description: "Join your voice channel.",
+			Name:        "record",
+			Description: "Record.",
 		},
-		Handler: p.joinme,
+		Handler: p.record,
 	}, {
 		Command: discordgo.ApplicationCommand{
-			Name:        "leave",
-			Description: "Leave your voice channel.",
+			Name:        "stop",
+			Description: "Stop recording.",
 		},
-		Handler: p.leaveme,
+		Handler: p.stop,
 	}}
 }
