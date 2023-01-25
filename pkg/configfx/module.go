@@ -15,6 +15,8 @@ var Module = fx.Provide(New)
 // Params defines the dependencies of the configfx module.
 type Params struct {
 	fx.In
+
+	ExtraOptions []config.YAMLOption `group:"configopts"`
 }
 
 // Result defines the objects that the configfx module provides.
@@ -32,6 +34,8 @@ func New(p Params) (Result, error) {
 	var opts = []config.YAMLOption{
 		config.Expand(envLookup),
 	}
+
+	opts = append(opts, p.ExtraOptions...)
 
 	opts = append(opts, tryFiles(".env")...)
 
