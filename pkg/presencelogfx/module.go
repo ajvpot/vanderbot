@@ -46,13 +46,19 @@ func (p *presenceLogger) handlePresenceUpdate(s *discordgo.Session, m *discordgo
 		return
 	}
 
+	songName := spotifySongForPresence(m.Presence)
+	if songName == "" {
+		p.Log.Debug("no song in spotify presence")
+		return
+	}
+
 	u, err := s.State.Member(m.GuildID, m.User.ID)
 	if err != nil {
 		p.Log.Error("unknown member", zap.String("gid", m.GuildID))
 		return
 	}
 
-	s.ChannelMessageSend(ch.ID, fmt.Sprintf("@%s#%s is listening to %s", u.User.Username, u.User.Discriminator, spotifySongForPresence(m.Presence)))
+	s.ChannelMessageSend(ch.ID, fmt.Sprintf("@%s#%s is listening to %s", u.User.Username, u.User.Discriminator, songName))
 
 }
 
