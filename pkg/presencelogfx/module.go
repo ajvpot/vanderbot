@@ -18,14 +18,16 @@ type Params struct {
 }
 
 type presenceLogger struct {
-	Session *discordgo.Session
-	Log     *zap.Logger
+	Session  *discordgo.Session
+	Log      *zap.Logger
+	lastSong map[string]string
 }
 
 func New(p Params) {
 	pl := presenceLogger{
-		Session: p.Session,
-		Log:     p.Log,
+		Session:  p.Session,
+		Log:      p.Log,
+		lastSong: make(map[string]string),
 	}
 
 	p.Session.AddHandler(pl.handlePresenceUpdate)
@@ -51,6 +53,14 @@ func (p *presenceLogger) handlePresenceUpdate(s *discordgo.Session, m *discordgo
 		p.Log.Debug("no song in spotify presence")
 		return
 	}
+
+	if lastSong, ok := p.lastSong[m.User.ID]; ok {
+		if songName == lastSong {
+			p.Log.Debug("duplicate spotify presence")
+			return
+		}
+	}
+	p.lastSong[m.User.ID] = songName
 
 	u, err := s.State.Member(m.GuildID, m.User.ID)
 	if err != nil {
