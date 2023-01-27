@@ -8,6 +8,7 @@ import (
 	"github.com/ajvpot/vanderbot/pkg/commands/ublockfx"
 	"github.com/ajvpot/vanderbot/pkg/configfx"
 	"github.com/ajvpot/vanderbot/pkg/discordfx"
+	"github.com/ajvpot/vanderbot/pkg/fedfx"
 	"github.com/ajvpot/vanderbot/pkg/presencelogfx"
 	"github.com/ajvpot/vanderbot/pkg/systemfx"
 	"github.com/ajvpot/vanderbot/pkg/voicefx"
@@ -26,6 +27,7 @@ func main() {
 		ublockfx.Module,
 		presencelogfx.Module,
 		voicefx.Module,
+		fedfx.Module,
 
 		// discord
 		discordfx.Module,
