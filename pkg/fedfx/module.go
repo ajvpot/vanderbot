@@ -68,7 +68,7 @@ func (p *fedLogger) handleMessageEdit(s *discordgo.Session, m *discordgo.Message
 }
 
 func (p *fedLogger) handleMessageDelete(s *discordgo.Session, m *discordgo.MessageDelete) {
-	p.logMessageDelete(m)
+	p.logMessageDelete(m.GuildID, m)
 }
 
 func (p *fedLogger) handleMessageDeleteBulk(s *discordgo.Session, m *discordgo.MessageDeleteBulk) {
@@ -78,7 +78,7 @@ func (p *fedLogger) handleMessageDeleteBulk(s *discordgo.Session, m *discordgo.M
 			p.Log.Error("failed messagedeletebulk parse")
 			continue
 		}
-		p.logMessageDelete(&discordgo.MessageDelete{
+		p.logMessageDelete(m.GuildID, &discordgo.MessageDelete{
 			Message:      nil,
 			BeforeDelete: msg,
 		})
@@ -86,14 +86,15 @@ func (p *fedLogger) handleMessageDeleteBulk(s *discordgo.Session, m *discordgo.M
 	return
 }
 
-func (p *fedLogger) logMessageDelete(m *discordgo.MessageDelete) {
-	if m.BeforeDelete == nil {
-		p.Log.Info("someone deleted a message but we dont have it cached")
-		return
-	}
-	gc, ok := p.config.Guilds[m.BeforeDelete.GuildID]
+func (p *fedLogger) logMessageDelete(gid string, m *discordgo.MessageDelete) {
+	gc, ok := p.config.Guilds[gid]
 
 	if !ok || gc.DeletedMessageLogChannel == "" {
+		return
+	}
+
+	if m.BeforeDelete == nil {
+		p.Session.ChannelMessageSend(discordfx.ChannelIDFromString(gc.DeletedMessageLogChannel), "[fed] Someone deleted a message but the contents were not cached in memory.")
 		return
 	}
 
