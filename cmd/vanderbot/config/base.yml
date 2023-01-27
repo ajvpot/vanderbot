@@ -11,5 +11,8 @@ logging:
 fed:
   guilds:
     "417747579489615883":
-      enableDeletedMessageLogging: true
-      logChannel: "1068328877753114694"
+      deletedMessageLogChannel: "1068328877753114694"
+      spotifyLogChannel: "1067758546478956604"
+    "1066511028260716575":
+      deletedMessageLogChannel: "1067758546478956604"
+      spotifyLogChannel: "1067758546478956604"
