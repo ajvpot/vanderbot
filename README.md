@@ -29,6 +29,9 @@ Check what resources are blocked from loading on a page by uBlock Origin
 
 
 ## TODO
+* [ ] fedfx
+  * [ ] logging messages to stdout
+  * [ ] post to admin channel when deleted message
 * [ ] HTTP Server
   * [ ] Health check
 * [ ] Interaction helper
