@@ -51,10 +51,16 @@ func New(p Params) error {
 		}
 	}
 
+	p.Log.Info("register")
 	p.Session.AddHandler(pl.handleMessageCreate)
+	p.Log.Info("register")
 	p.Session.AddHandler(pl.handleMessageEdit)
+	p.Log.Info("register")
 	p.Session.AddHandler(pl.handleMessageDelete)
+	p.Log.Info("register")
 	p.Session.AddHandler(pl.handleMessageDeleteBulk)
+	p.Log.Info("register")
+	p.Session.State.MaxMessageCount = 100000
 
 	return nil
 }
@@ -87,6 +93,10 @@ func (p *fedLogger) handleMessageDeleteBulk(s *discordgo.Session, m *discordgo.M
 }
 
 func (p *fedLogger) logMessageDelete(m *discordgo.MessageDelete) {
+	if m.BeforeDelete == nil {
+		p.Log.Info("someone deleted a message but we dont have it cached")
+		return
+	}
 	gc, ok := p.config.Guilds[m.BeforeDelete.GuildID]
 
 	if !ok || !gc.EnableDeletedMessageLogging {

@@ -72,6 +72,12 @@ func instrumentSession(s *discordgo.Session, p *zap.Logger) {
 	s.AddHandler(func(s *discordgo.Session, m *discordgo.MessageCreate) {
 		p.Debug("MessageCreate", zap.Reflect("event", m))
 	})
+	s.AddHandler(func(s *discordgo.Session, m *discordgo.MessageEdit) {
+		p.Debug("MessageEdit", zap.Reflect("event", m))
+	})
+	s.AddHandler(func(s *discordgo.Session, m *discordgo.MessageDelete) {
+		p.Debug("MessageDelete", zap.Reflect("event", m))
+	})
 	s.AddHandler(func(s *discordgo.Session, m *discordgo.PresenceUpdate) {
 		p.Debug("PresenceUpdate", zap.Reflect("event", m))
 	})
