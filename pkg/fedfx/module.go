@@ -103,5 +103,5 @@ func (p *fedLogger) logMessageDelete(m *discordgo.MessageDelete) {
 		return
 	}
 
-	p.Session.ChannelMessageSend(discordfx.ChannelIDFromString(gc.LogChannel), fmt.Sprintf("%s deleted a message:\n%v", m.BeforeDelete.Author.String(), m.BeforeDelete))
+	p.Session.ChannelMessageSend(discordfx.ChannelIDFromString(gc.LogChannel), fmt.Sprintf("%s deleted a message:\n%v", m.BeforeDelete.Author.String(), m.BeforeDelete.Content))
 }
