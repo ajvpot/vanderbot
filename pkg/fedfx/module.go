@@ -21,9 +21,13 @@ type Params struct {
 	Config  config.Provider
 }
 
+type DeletedMessageLogConfig struct {
+	Channel       string `yaml:"channel"`
+	AllowDeletion bool   `yaml:"allowDeletion"`
+}
 type GuildConfig struct {
-	DeletedMessageLogChannel string `yaml:"deletedMessageLogChannel"`
-	SpotifyLogChannel        string `yaml:"spotifyLogChannel"`
+	SpotifyLogChannel string                  `yaml:"spotifyLogChannel"`
+	DeletedMessageLog DeletedMessageLogConfig `yaml:"deletedMessageLog"`
 }
 type Config struct {
 	Guilds map[string]GuildConfig `yaml:"guilds"`
@@ -89,21 +93,28 @@ func (p *fedLogger) handleMessageDeleteBulk(s *discordgo.Session, m *discordgo.M
 func (p *fedLogger) logMessageDelete(gid string, m *discordgo.MessageDelete) {
 	gc, ok := p.config.Guilds[gid]
 
-	if !ok || gc.DeletedMessageLogChannel == "" {
+	if !ok || gc.DeletedMessageLog.Channel == "" {
 		return
 	}
 
 	if m.BeforeDelete == nil {
-		p.Session.ChannelMessageSend(discordfx.ChannelIDFromString(gc.DeletedMessageLogChannel), "[fed] Someone deleted a message but the contents were not cached in memory.")
+		p.Session.ChannelMessageSend(discordfx.ChannelIDFromString(gc.DeletedMessageLog.Channel), "[fed] Someone deleted a message but the contents were not cached in memory.")
+		return
+	}
+
+	if gc.DeletedMessageLog.AllowDeletion &&
+		gc.DeletedMessageLog.Channel == m.BeforeDelete.ChannelID &&
+		m.BeforeDelete.Author.String() == p.Session.State.User.String() {
+		p.Log.Info("allowing deletion of deleted message log")
 		return
 	}
 
 	ch, err := p.Session.State.Channel(m.BeforeDelete.ChannelID)
 	if err != nil {
-		p.Session.ChannelMessageSend(discordfx.ChannelIDFromString(gc.DeletedMessageLogChannel), fmt.Sprintf("[fed] @%s deleted a message:\n%v", m.BeforeDelete.Author.String(), m.BeforeDelete.Content))
+		p.Session.ChannelMessageSend(discordfx.ChannelIDFromString(gc.DeletedMessageLog.Channel), fmt.Sprintf("[fed] @%s deleted a message:\n%v", m.BeforeDelete.Author.String(), m.BeforeDelete.Content))
 		return
 	}
-	p.Session.ChannelMessageSend(discordfx.ChannelIDFromString(gc.DeletedMessageLogChannel), fmt.Sprintf("[fed] @%s deleted a message in #%s:\n%v", m.BeforeDelete.Author.String(), ch.Name, m.BeforeDelete.Content))
+	p.Session.ChannelMessageSend(discordfx.ChannelIDFromString(gc.DeletedMessageLog.Channel), fmt.Sprintf("[fed] @%s deleted a message in #%s:\n%v", m.BeforeDelete.Author.String(), ch.Name, m.BeforeDelete.Content))
 }
 
 func (p *fedLogger) handlePresenceUpdate(s *discordgo.Session, m *discordgo.PresenceUpdate) {
