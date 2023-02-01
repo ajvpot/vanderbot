@@ -8,5 +8,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: git diff ${{ github.base_ref }} -- migrations/current.sql
+      - run: git diff ${{ github.base_ref }} -- migrations/current.sql || echo "All migrations must be committed. Run `graphile-migrate commit`".
 
