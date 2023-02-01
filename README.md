@@ -12,10 +12,13 @@
     ```
 
 ## Modules/Usage
+### Discord module
+* Connects the bot to Discord, provides callbacks for registering event handlers.
+* [Configurable](https://pkg.go.dev/github.com/ajvpot/vanderbot/pkg/discordfx#BotConfig)
 ### "fed" module
 * Log Spotify presence messages for a guild to a channel.
 * Log deleted messages for a guild to a channel.
-* [Configurable](https://pkg.go.dev/github.com/ajvpot/vanderbot/pkg/fedfx)
+* [Configurable](https://pkg.go.dev/github.com/ajvpot/vanderbot/pkg/fedfx#Config)
 
 ### ublock
 * Check what resources are blocked from loading on a page by uBlock Origin with `/ublock [url]`
