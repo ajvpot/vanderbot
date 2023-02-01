@@ -8,9 +8,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          ref: ${{ github.base_ref }}
-      - uses: actions/checkout@v3
       - name: Check that migrations are committed.
-        run: git diff ${{ github.base_ref }} -- migrations/current.sql || (echo "All migrations must be committed. Run graphile-migrate commit."; false)
+        run: |-
+          #!/bin/bash
 
+          # Calculate the md5sum of migrations/current.sql
+          current_md5=$(md5sum migrations/current.sql | awk '{print $1}')
+
+          # Check if the calculated md5sum matches the expected value
+          if [ "$current_md5" != "e2efdf0e5b3da5345e0a5af5f398a728" ]; then
+            # If not, exit with an error code
+            echo "Error: migrations/current.sql has an unexpected md5sum"
+            exit 1
+          else
+            # If the md5sum is as expected, exit successfully
+            echo "migrations/current.sql has the expected md5sum"
+            exit 0
+          fi
