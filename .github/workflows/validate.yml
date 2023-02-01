@@ -9,5 +9,5 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Check that migrations are committed.
-        run: git diff ${{ github.base_ref }} -- migrations/current.sql || echo "All migrations must be committed. Run `graphile-migrate commit`".
+        run: git diff ${{ github.base_ref }} -- migrations/current.sql || (echo "All migrations must be committed. Run graphile-migrate commit."; false)
 
