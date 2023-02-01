@@ -1,4 +1,4 @@
-version: "3.3"
+version: "3.7"
 services:
   db:
     restart: always
@@ -13,8 +13,8 @@ services:
       - 5432:5432
     environment:
       POSTGRES_PASSWORD: postgres
-  graphile-migrate:
-    restart: "no"
+  migrate:
+    restart: always
     build:
       context: docker
       dockerfile: migrate.Dockerfile
@@ -29,6 +29,9 @@ services:
       ROOT_DATABASE_URL: postgres://postgres:postgres@db/postgres
     depends_on:
       - db
+    entrypoint: ["/usr/bin/graphile-migrate", "watch"]
+    init: true
+
 
 volumes:
   db:
