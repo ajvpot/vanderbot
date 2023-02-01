@@ -55,5 +55,6 @@
     * https://github.com/xthexder/go-jack
     * windows? https://jackaudio.org/faq/jack_on_windows.html
 * [ ] Add functionality to discordgo for tracking ssrc (?)
+* [ ] Persistent message store in database for other modules to use and support of multiple clients, upgrades without losing messages.
 * rm kodata from the repo, add an env var for runtime environment, move config to folder, load config from runtime env file, copy entire config to kodata
 * yeet the user's discord token out of browser profile for local operation?
