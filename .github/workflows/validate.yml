@@ -1,0 +1,12 @@
+name: Validate
+
+on:
+  push:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: git diff ${{ github.base_ref }} -- migrations/current.sql
+
