@@ -26,11 +26,8 @@ jobs:
             exit 0
           fi
       - run: |-
-          docker-compose up
-          
-          # wait for postgres
-          
-          go generate ./...
+          docker-compose up -d
+          timeout 2m bash -c 'until go generate ./...; do sleep 5; done'
       - id: check_generated
         name: Check Generated Files
         run: |-
