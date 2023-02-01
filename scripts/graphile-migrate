@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# A wrapper for running graphile-migrate within a container
+
+docker-compose run \
+    -ti \
+    --user "$(id -u):$(id -g)" \
+    --rm \
+    --entrypoint /usr/bin/graphile-migrate \
+    migrate "$@"

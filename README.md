@@ -36,6 +36,11 @@
 * Stopwatch for individual speakers
 * Post summary to text when everyone leaves or when commanded
 
+## Database
+### Migrations
+
+## Contributing
+
 ## TODO
 * [x] fedfx
   * [x] logging messages to stdout

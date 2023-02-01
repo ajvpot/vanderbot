@@ -1,0 +1,73 @@
+name: Validate
+
+on:
+  pull_request:
+
+env:
+  GOPRIVATE: "github.com"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Configure git for private modules
+        env:
+          TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        run: git config --global url."https://YOUR_GITHUB_USERNAME:${TOKEN}@github.com".insteadOf "https://github.com"
+      - name: Check that migrations are committed.
+        run: |-
+          #!/bin/bash
+
+          # Calculate the md5sum of migrations/current.sql
+          current_md5=$(md5sum migrations/current.sql | awk '{print $1}')
+
+          # Check if the calculated md5sum matches the expected value
+          if [ "$current_md5" != "e2efdf0e5b3da5345e0a5af5f398a728" ]; then
+            # If not, exit with an error code
+            echo "Error: migrations/current.sql has an unexpected md5sum"
+            exit 1
+          else
+            # If the md5sum is as expected, exit successfully
+            echo "migrations/current.sql has the expected md5sum"
+            exit 0
+          fi
+      - run: |-
+          docker-compose up -d
+          timeout 2m bash -c 'until go generate ./...; do sleep 5; done'
+      - id: check_generated
+        name: Check Generated Files
+        run: |-
+          DIFF=`git diff -p -- .`
+          
+          if [[ ! -z "$DIFF" ]]; then
+            echo "# Generated files don't match" >> $GITHUB_STEP_SUMMARY
+            echo "run yarn generate" >> $GITHUB_STEP_SUMMARY
+            echo '```diff' >> $GITHUB_STEP_SUMMARY
+            echo "$DIFF" | tee -a $GITHUB_STEP_SUMMARY
+            echo "::error Generated files do not match. See job summary for diff."
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            echo "::set-output name=changes::true"
+          fi
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v4
+        if: github.event_name == 'pull_request'
+        with:
+          commit-message: Update generated files
+          base: ${{ github.head_ref }}
+          branch: regenerate/${{ github.head_ref }}
+          delete-branch: true
+          title: "Regenerate files for ${{ github.head_ref }}"
+          body: |
+            Update generated files
+          labels: |
+            automated
+          assignees: ${{ !contains(github.actor, '[bot]') && github.actor }}
+          draft: false
+      - name: Fail if there were changes
+        if: ${{ steps.cpr.outputs.pull-request-number }}
+        run: |
+          echo "Generated files don't match, pull request created:"
+          echo "${{ steps.cpr.outputs.pull-request-url }}"
+          exit 1
