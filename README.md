@@ -18,12 +18,11 @@
 * [Configurable](https://pkg.go.dev/github.com/ajvpot/vanderbot/pkg/fedfx)
 
 ### ublock
-* Check what resources are blocked from loading on a page by uBlock Origin
-#### Usage
-`/ublock [url]`
+* Check what resources are blocked from loading on a page by uBlock Origin with `/ublock [url]`
 
 ### Multichannel Audio Recording
-* Create recording of a voice channel when summoned
+* Join the user's channel with `/join`
+* Leave the current voice channel with `/leave`
 * Output to separate audio files per speaker
 * Option to output to separate audio outputs live for OBS etc.
   * is there some library for ipc audio?
@@ -34,15 +33,13 @@
 * Stopwatch for individual speakers
 * Post summary to text when everyone leaves or when commanded
 
-
-
-
 ## TODO
-* [ ] fedfx
-  * [ ] logging messages to stdout
-  * [ ] post to admin channel when deleted message
-* [ ] HTTP Server
-  * [ ] Health check
+* [x] fedfx
+  * [x] logging messages to stdout
+  * [x] post to admin channel when deleted message
+  * [x] Log spotify presence
+* [x] HTTP Server
+  * [x] Health check
 * [ ] Interaction helper
   * [x] 15s context for interactions
   * [ ] Integrate ublock command
@@ -55,6 +52,5 @@
     * https://github.com/xthexder/go-jack
     * windows? https://jackaudio.org/faq/jack_on_windows.html
 * [ ] Add functionality to discordgo for tracking ssrc (?)
-* [ ] Log spotify presence
 * rm kodata from the repo, add an env var for runtime environment, move config to folder, load config from runtime env file, copy entire config to kodata
 * yeet the user's discord token out of browser profile for local operation?
