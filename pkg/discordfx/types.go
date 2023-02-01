@@ -8,6 +8,7 @@ import (
 )
 
 // Guild represents a Guild ID or Guild URL in the config.
+// TODO Make this work properly. Currently requires the user to truncate the channel if they want URL notation.
 type Guild string
 
 func (g *Guild) UnmarshalJSON(b []byte) error {
