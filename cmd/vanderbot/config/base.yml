@@ -12,11 +12,11 @@ fed:
   guilds:
     "417747579489615883":
       deletedMessageLog:
-        channel: "1068328877753114694"
+        channel: https://discord.com/channels/417747579489615883/1068328877753114694
         allowDeletion: true
-      spotifyLogChannel: "1067758546478956604"
+      spotifyLogChannel: https://discord.com/channels/1066511028260716575/1067758546478956604
     "1066511028260716575":
       deletedMessageLog:
-        channel: "1067758546478956604"
+        channel: https://discord.com/channels/1066511028260716575/1067758546478956604
         allowDeletion: true
-      spotifyLogChannel: "1067758546478956604"
+      spotifyLogChannel: https://discord.com/channels/1066511028260716575/1067758546478956604
