@@ -10,31 +10,6 @@
  */
 {
   /*
-   * connectionString: this tells Graphile Migrate where to find the database
-   * to run the migrations against.
-   *
-   * RECOMMENDATION: use `DATABASE_URL` envvar instead.
-   */
-  // "connectionString": "postgres://appuser:apppassword@host:5432/appdb",
-
-  /*
-   * shadowConnectionString: like connectionString, but this is used for the
-   * shadow database (which will be reset frequently).
-   *
-   * RECOMMENDATION: use `SHADOW_DATABASE_URL` envvar instead.
-   */
-  // "shadowConnectionString": "postgres://appuser:apppassword@host:5432/appdb_shadow",
-
-  /*
-   * rootConnectionString: like connectionString, but this is used for
-   * dropping/creating the database in `graphile-migrate reset`. This isn't
-   * necessary, shouldn't be used in production, but helps during development.
-   *
-   * RECOMMENDATION: use `ROOT_DATABASE_URL` envvar instead.
-   */
-  // "rootConnectionString": "postgres://adminuser:adminpassword@host:5432/postgres",
-
-  /*
    * pgSettings: key-value settings to be automatically loaded into PostgreSQL
    * before running migrations, using an equivalent of `SET LOCAL <key> TO
    * <value>`
