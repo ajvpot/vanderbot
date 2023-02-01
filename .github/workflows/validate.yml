@@ -38,7 +38,7 @@ jobs:
       - id: check_generated
         name: Check Generated Files
         run: |-
-          DIFF=`git diff -p -- .
+          DIFF=`git diff -p -- .`
           
           if [[ ! -z "$DIFF" ]]; then
             echo "# Generated files don't match" >> $GITHUB_STEP_SUMMARY
