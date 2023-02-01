@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# A wrapper for running graphile-migrate within a container
+
+# Use
+# * -ti --init to allow for CTRL-C to work with `graphile-migrate watch`
+# * --user     to allow the current user to own any committed migrations
+# * Mount $PWD as /migrate for access to graphile-migrate working files
+
+# todo replace with docker-compose run and compat flags
+docker-compose run \
+    -ti \
+    --user "$(id -u):$(id -g)" \
+    --rm \
+    --entrypoint /usr/bin/graphile-migrate \
+    graphile-migrate "$@"

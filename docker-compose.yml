@@ -1,0 +1,27 @@
+version: "3.3"
+services:
+  db:
+    restart: always
+    image: postgres
+    volumes:
+      - db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: postgres
+  graphile-migrate:
+    restart: "no"
+    build:
+      context: docker
+      dockerfile: migrate.Dockerfile
+    volumes:
+      - ./:/repo
+    environment:
+      DATABASE_URL:
+      ROOT_DATABASE_URL: postgres://postgres:postgres@db/postgres
+      SHADOW_DATABASE_URL:
+    depends_on:
+      - db
+
+volumes:
+  db:
