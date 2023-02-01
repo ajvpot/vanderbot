@@ -2,7 +2,11 @@ version: "3.3"
 services:
   db:
     restart: always
-    image: postgres
+    build:
+      context: docker
+      dockerfile: database.Dockerfile
+      args:
+        POSTGRES_VERSION: ${POSTGRES_VERSION}
     volumes:
       - db:/var/lib/postgresql/data
     ports:
@@ -14,12 +18,15 @@ services:
     build:
       context: docker
       dockerfile: migrate.Dockerfile
+      args:
+        NODEJS_VERSION: ${NODEJS_VERSION}
+        POSTGRES_VERSION: ${POSTGRES_VERSION}
     volumes:
       - ./:/repo
     environment:
-      DATABASE_URL:
+      DATABASE_URL: postgres://postgres:postgres@db/vanderbot
+      SHADOW_DATABASE_URL: postgres://postgres:postgres@db/vanderbot_shadow
       ROOT_DATABASE_URL: postgres://postgres:postgres@db/postgres
-      SHADOW_DATABASE_URL:
     depends_on:
       - db
 
