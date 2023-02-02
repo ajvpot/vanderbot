@@ -7,8 +7,10 @@ import (
 
 	"github.com/ajvpot/vanderbot/pkg/commands/ublockfx"
 	"github.com/ajvpot/vanderbot/pkg/configfx"
+	"github.com/ajvpot/vanderbot/pkg/dbfx"
 	"github.com/ajvpot/vanderbot/pkg/discordfx"
 	"github.com/ajvpot/vanderbot/pkg/fedfx"
+	"github.com/ajvpot/vanderbot/pkg/messagestorefx"
 	"github.com/ajvpot/vanderbot/pkg/systemfx"
 	"github.com/ajvpot/vanderbot/pkg/voicefx"
 	"github.com/ajvpot/vanderbot/pkg/zapfx"
@@ -19,6 +21,7 @@ func main() {
 		configfx.Module,
 		zapfx.Module,
 		systemfx.Module,
+		dbfx.Module,
 
 		chromefx.Module,
 
@@ -26,6 +29,7 @@ func main() {
 		ublockfx.Module,
 		voicefx.Module,
 		fedfx.Module,
+		messagestorefx.Module,
 
 		// discord
 		discordfx.Module,
