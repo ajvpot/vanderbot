@@ -20,3 +20,6 @@ fed:
         channel: https://discord.com/channels/1066511028260716575/1067758546478956604
         allowDeletion: true
       spotifyLogChannel: https://discord.com/channels/1066511028260716575/1067758546478956604
+
+db:
+  url: ${DATABASE_URL}
