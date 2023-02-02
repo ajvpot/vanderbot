@@ -2,7 +2,6 @@ name: Validate
 
 on:
   pull_request:
-  push:
 
 env:
   GOPRIVATE: "github.com"
