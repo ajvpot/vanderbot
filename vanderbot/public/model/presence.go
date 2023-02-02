@@ -8,11 +8,11 @@
 package model
 
 import (
-	"encoding/json"
+	"json"
 )
 
 type Presence struct {
 	UserID  int64
 	GuildID int64
-	Blob    json.RawMessage
+	Blob    RawMessage
 }

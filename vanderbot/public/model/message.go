@@ -8,11 +8,14 @@
 package model
 
 import (
-	"encoding/json"
+	"json"
 )
 
-type Presence struct {
-	UserID  int64
-	GuildID int64
-	Blob    json.RawMessage
+type Message struct {
+	Blob      RawMessage
+	CreatedAt string
+	EditedAt  *string
+	MessageID string
+	ChannelID string
+	GuildID   *string
 }
