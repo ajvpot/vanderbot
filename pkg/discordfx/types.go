@@ -1,7 +1,6 @@
 package discordfx
 
 import (
-	"encoding/json"
 	"net/url"
 	"strconv"
 	"strings"
@@ -11,9 +10,9 @@ import (
 // TODO Make this work properly. Currently requires the user to truncate the channel if they want URL notation.
 type Guild string
 
-func (g *Guild) UnmarshalJSON(b []byte) error {
+func (g *Guild) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	var s string
-	if err := json.Unmarshal(b, &s); err != nil {
+	if err := unmarshal(&s); err != nil {
 		return err
 	}
 
@@ -41,9 +40,9 @@ func (g *Guild) UnmarshalJSON(b []byte) error {
 // Channel represents a Channel ID or Channel URL in the config.
 type Channel string
 
-func (c *Channel) UnmarshalJSON(b []byte) error {
+func (c *Channel) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	var s string
-	if err := json.Unmarshal(b, &s); err != nil {
+	if err := unmarshal(&s); err != nil {
 		return err
 	}
 
@@ -61,7 +60,7 @@ func (c *Channel) UnmarshalJSON(b []byte) error {
 	*c = Channel(urlParts[len(urlParts)-1])
 
 	// The result must be numeric.
-	if _, err := strconv.Atoi(s); err != nil {
+	if _, err := strconv.Atoi(string(*c)); err != nil {
 		return err
 	}
 
