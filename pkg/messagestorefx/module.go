@@ -15,7 +15,7 @@ import (
 	"github.com/ajvpot/vanderbot/internal/gen/vanderbot/public/table"
 )
 
-var Module = fx.Options(fx.Invoke(New))
+var Module = fx.Options(fx.Provide(New))
 
 type Params struct {
 	fx.In
