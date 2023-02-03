@@ -9,10 +9,12 @@ package model
 
 import (
 	"encoding/json"
+	"time"
 )
 
 type Presence struct {
-	UserID  int64
-	GuildID int64
-	Blob    json.RawMessage
+	GuildID   string
+	Blob      json.RawMessage
+	CreatedAt time.Time
+	UserID    string
 }

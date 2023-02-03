@@ -17,9 +17,10 @@ type presenceTable struct {
 	postgres.Table
 
 	//Columns
-	UserID  postgres.ColumnInteger
-	GuildID postgres.ColumnInteger
-	Blob    postgres.ColumnString
+	GuildID   postgres.ColumnString
+	Blob      postgres.ColumnString
+	CreatedAt postgres.ColumnTimestampz
+	UserID    postgres.ColumnString
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -60,20 +61,22 @@ func newPresenceTable(schemaName, tableName, alias string) *PresenceTable {
 
 func newPresenceTableImpl(schemaName, tableName, alias string) presenceTable {
 	var (
-		UserIDColumn   = postgres.IntegerColumn("user_id")
-		GuildIDColumn  = postgres.IntegerColumn("guild_id")
-		BlobColumn     = postgres.StringColumn("blob")
-		allColumns     = postgres.ColumnList{UserIDColumn, GuildIDColumn, BlobColumn}
-		mutableColumns = postgres.ColumnList{UserIDColumn, GuildIDColumn, BlobColumn}
+		GuildIDColumn   = postgres.StringColumn("guild_id")
+		BlobColumn      = postgres.StringColumn("blob")
+		CreatedAtColumn = postgres.TimestampzColumn("created_at")
+		UserIDColumn    = postgres.StringColumn("user_id")
+		allColumns      = postgres.ColumnList{GuildIDColumn, BlobColumn, CreatedAtColumn, UserIDColumn}
+		mutableColumns  = postgres.ColumnList{GuildIDColumn, BlobColumn, CreatedAtColumn, UserIDColumn}
 	)
 
 	return presenceTable{
 		Table: postgres.NewTable(schemaName, tableName, alias, allColumns...),
 
 		//Columns
-		UserID:  UserIDColumn,
-		GuildID: GuildIDColumn,
-		Blob:    BlobColumn,
+		GuildID:   GuildIDColumn,
+		Blob:      BlobColumn,
+		CreatedAt: CreatedAtColumn,
+		UserID:    UserIDColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,

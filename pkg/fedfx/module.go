@@ -1,6 +1,8 @@
 package fedfx
 
 import (
+	"database/sql"
+	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -9,6 +11,7 @@ import (
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 
+	"github.com/ajvpot/vanderbot/internal/gen/vanderbot/public/table"
 	"github.com/ajvpot/vanderbot/pkg/discordfx"
 	"github.com/ajvpot/vanderbot/pkg/messagestorefx"
 )
@@ -21,6 +24,7 @@ type Params struct {
 	Log          *zap.Logger
 	Config       config.Provider
 	MessageStore messagestorefx.Store
+	DB           *sql.DB
 }
 
 type DeletedMessageLogConfig struct {
@@ -40,6 +44,7 @@ type fedLogger struct {
 	config       Config
 	messageStore messagestorefx.Store
 	lastSong     map[string]string
+	db           *sql.DB
 }
 
 func New(p Params) error {
@@ -49,6 +54,7 @@ func New(p Params) error {
 		config:       Config{},
 		lastSong:     make(map[string]string),
 		messageStore: p.MessageStore,
+		db:           p.DB,
 	}
 
 	err := p.Config.Get("fed").Populate(&pl.config)
@@ -126,6 +132,18 @@ func (p *fedLogger) logMessageDelete(gid string, m *discordgo.MessageDelete) {
 }
 
 func (p *fedLogger) handlePresenceUpdate(s *discordgo.Session, m *discordgo.PresenceUpdate) {
+
+	serializedMessage, err := json.Marshal(m.Presence)
+	if err != nil {
+		p.Log.Error("error serializing created message", zap.Error(err))
+		return
+	}
+	insertStmt := table.Presence.INSERT(table.Presence.GuildID, table.Presence.Blob).VALUES(m.GuildID, serializedMessage)
+	_, err = insertStmt.Exec(p.db)
+	if err != nil {
+		p.Log.Error("error inserting presence", zap.Error(err))
+	}
+
 	gc, ok := p.config.Guilds[discordfx.Guild(m.GuildID)]
 
 	if !ok || gc.SpotifyLogChannel == "" {
