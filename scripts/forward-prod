@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+kubectl port-forward --address=0.0.0.0 vanderbot-postgresql-0 5498:5432
