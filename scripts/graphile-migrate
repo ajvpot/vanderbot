@@ -6,5 +6,5 @@ docker-compose run \
     -ti \
     --user "$(id -u):$(id -g)" \
     --rm \
-    --entrypoint /usr/bin/graphile-migrate \
+    --entrypoint /usr/local/bin/graphile-migrate \
     migrate "$@"

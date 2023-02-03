@@ -29,7 +29,7 @@ services:
       ROOT_DATABASE_URL: postgres://postgres:postgres@db/postgres
     depends_on:
       - db
-    entrypoint: ["/usr/bin/graphile-migrate", "watch"]
+    entrypoint: ["/usr/local/bin/graphile-migrate", "watch"]
     init: true
 
 
