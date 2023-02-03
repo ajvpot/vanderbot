@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:postgresql://localhost:5499/vanderbot</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="vanderbot@production" uuid="aedec715-7f48-4d7e-81d7-f6b2f4001578">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://localhost:5498/vanderbot</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

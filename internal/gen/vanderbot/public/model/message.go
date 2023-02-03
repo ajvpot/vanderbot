@@ -18,4 +18,5 @@ type Message struct {
 	MessageID string
 	ChannelID string
 	GuildID   *string
+	IsDelete  *bool
 }

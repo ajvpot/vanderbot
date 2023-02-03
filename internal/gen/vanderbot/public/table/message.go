@@ -23,6 +23,7 @@ type messageTable struct {
 	MessageID postgres.ColumnString
 	ChannelID postgres.ColumnString
 	GuildID   postgres.ColumnString
+	IsDelete  postgres.ColumnBool
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -69,8 +70,9 @@ func newMessageTableImpl(schemaName, tableName, alias string) messageTable {
 		MessageIDColumn = postgres.StringColumn("message_id")
 		ChannelIDColumn = postgres.StringColumn("channel_id")
 		GuildIDColumn   = postgres.StringColumn("guild_id")
-		allColumns      = postgres.ColumnList{BlobColumn, CreatedAtColumn, EditedAtColumn, MessageIDColumn, ChannelIDColumn, GuildIDColumn}
-		mutableColumns  = postgres.ColumnList{BlobColumn, CreatedAtColumn, EditedAtColumn, MessageIDColumn, ChannelIDColumn, GuildIDColumn}
+		IsDeleteColumn  = postgres.BoolColumn("is_delete")
+		allColumns      = postgres.ColumnList{BlobColumn, CreatedAtColumn, EditedAtColumn, MessageIDColumn, ChannelIDColumn, GuildIDColumn, IsDeleteColumn}
+		mutableColumns  = postgres.ColumnList{BlobColumn, CreatedAtColumn, EditedAtColumn, MessageIDColumn, ChannelIDColumn, GuildIDColumn, IsDeleteColumn}
 	)
 
 	return messageTable{
@@ -83,6 +85,7 @@ func newMessageTableImpl(schemaName, tableName, alias string) messageTable {
 		MessageID: MessageIDColumn,
 		ChannelID: ChannelIDColumn,
 		GuildID:   GuildIDColumn,
+		IsDelete:  IsDeleteColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,
