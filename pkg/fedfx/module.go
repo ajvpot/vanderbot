@@ -32,7 +32,7 @@ type GuildConfig struct {
 	DeletedMessageLog DeletedMessageLogConfig `yaml:"deletedMessageLog"`
 }
 type Config struct {
-	Guilds map[string]GuildConfig `yaml:"guilds"`
+	Guilds map[discordfx.Guild]GuildConfig `yaml:"guilds"`
 }
 type fedLogger struct {
 	Session      *discordgo.Session
@@ -95,7 +95,7 @@ func (p *fedLogger) handleMessageDeleteBulk(s *discordgo.Session, m *discordgo.M
 }
 
 func (p *fedLogger) logMessageDelete(gid string, m *discordgo.MessageDelete) {
-	gc, ok := p.config.Guilds[gid]
+	gc, ok := p.config.Guilds[discordfx.Guild(gid)]
 
 	if !ok || gc.DeletedMessageLog.Channel == "" {
 		return
@@ -126,7 +126,7 @@ func (p *fedLogger) logMessageDelete(gid string, m *discordgo.MessageDelete) {
 }
 
 func (p *fedLogger) handlePresenceUpdate(s *discordgo.Session, m *discordgo.PresenceUpdate) {
-	gc, ok := p.config.Guilds[m.GuildID]
+	gc, ok := p.config.Guilds[discordfx.Guild(m.GuildID)]
 
 	if !ok || gc.SpotifyLogChannel == "" {
 		return

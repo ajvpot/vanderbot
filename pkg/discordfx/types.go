@@ -1,6 +1,7 @@
 package discordfx
 
 import (
+	"errors"
 	"net/url"
 	"strconv"
 	"strings"
@@ -18,6 +19,7 @@ func (g *Guild) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 	// If it's numeric, just return it.
 	if _, err := strconv.Atoi(s); err == nil {
+		*g = Guild(s)
 		return nil
 	}
 
@@ -27,7 +29,12 @@ func (g *Guild) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	}
 
 	urlParts := strings.Split(u.Path, "/")
-	*g = Guild(urlParts[len(urlParts)-1])
+
+	if len(urlParts) < 3 {
+		return errors.New("invalid guild url")
+	}
+
+	*g = Guild(urlParts[2])
 
 	// The result must be numeric.
 	if _, err := strconv.Atoi(s); err != nil {
@@ -48,6 +55,7 @@ func (c *Channel) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 	// If it's numeric, just return it.
 	if _, err := strconv.Atoi(s); err == nil {
+		*c = Channel(s)
 		return nil
 	}
 
@@ -57,7 +65,12 @@ func (c *Channel) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	}
 
 	urlParts := strings.Split(u.Path, "/")
-	*c = Channel(urlParts[len(urlParts)-1])
+
+	if len(urlParts) < 4 {
+		return errors.New("invalid channel url")
+	}
+
+	*c = Channel(urlParts[3])
 
 	// The result must be numeric.
 	if _, err := strconv.Atoi(string(*c)); err != nil {
