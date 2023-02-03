@@ -68,7 +68,6 @@ func New(p Params) error {
 	p.Session.AddHandler(pl.handleMessageDelete)
 	p.Session.AddHandler(pl.handleMessageDeleteBulk)
 	p.Session.AddHandler(pl.handlePresenceUpdate)
-	p.Session.State.MaxMessageCount = 100000
 
 	return nil
 }
