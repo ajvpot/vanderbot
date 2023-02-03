@@ -10,15 +10,17 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/ajvpot/vanderbot/pkg/discordfx"
+	"github.com/ajvpot/vanderbot/pkg/messagestorefx"
 )
 
 var Module = fx.Options(fx.Invoke(New))
 
 type Params struct {
 	fx.In
-	Session *discordgo.Session
-	Log     *zap.Logger
-	Config  config.Provider
+	Session      *discordgo.Session
+	Log          *zap.Logger
+	Config       config.Provider
+	MessageStore messagestorefx.Store
 }
 
 type DeletedMessageLogConfig struct {
@@ -33,18 +35,20 @@ type Config struct {
 	Guilds map[string]GuildConfig `yaml:"guilds"`
 }
 type fedLogger struct {
-	Session  *discordgo.Session
-	Log      *zap.Logger
-	config   Config
-	lastSong map[string]string
+	Session      *discordgo.Session
+	Log          *zap.Logger
+	config       Config
+	messageStore messagestorefx.Store
+	lastSong     map[string]string
 }
 
 func New(p Params) error {
 	pl := fedLogger{
-		Session:  p.Session,
-		Log:      p.Log,
-		config:   Config{},
-		lastSong: make(map[string]string),
+		Session:      p.Session,
+		Log:          p.Log,
+		config:       Config{},
+		lastSong:     make(map[string]string),
+		messageStore: p.MessageStore,
 	}
 
 	err := p.Config.Get("fed").Populate(&pl.config)
@@ -98,8 +102,12 @@ func (p *fedLogger) logMessageDelete(gid string, m *discordgo.MessageDelete) {
 	}
 
 	if m.BeforeDelete == nil {
-		p.Session.ChannelMessageSend(string(gc.DeletedMessageLog.Channel), "[fed] Someone deleted a message but the contents were not cached in memory.")
-		return
+		dbm, err := p.messageStore.GetMessage(m.ID)
+		if err != nil {
+			p.Session.ChannelMessageSend(string(gc.DeletedMessageLog.Channel), fmt.Sprintf("[fed] Someone deleted a message but the contents were not cached in memory: %v", err))
+			return
+		}
+		m.BeforeDelete = dbm
 	}
 
 	if gc.DeletedMessageLog.AllowDeletion &&
