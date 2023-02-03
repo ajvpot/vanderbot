@@ -2,9 +2,6 @@
   <configuration default="false" name="go build github.com/ajvpot/vanderbot/cmd/vanderbot" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
     <module name="vanderbot" />
     <working_directory value="$PROJECT_DIR$/cmd/vanderbot" />
-    <envs>
-      <env name="DATABASE_URL" value="postgres://postgres:postgres@localhost:5499/vanderbot" />
-    </envs>
     <kind value="PACKAGE" />
     <package value="github.com/ajvpot/vanderbot/cmd/vanderbot" />
     <directory value="$PROJECT_DIR$" />
