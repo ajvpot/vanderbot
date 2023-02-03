@@ -2,6 +2,8 @@
 
 # A wrapper for running graphile-migrate within a container
 
+kubectl port-forward --address 0.0.0.0 service/vanderbot-postgresql 5498:5432 &
+
 docker-compose run \
     -ti \
     --user "$(id -u):$(id -g)" \
@@ -9,3 +11,5 @@ docker-compose run \
     --entrypoint /usr/local/bin/graphile-migrate \
     -e DATABASE_URL=postgres://postgres:postgres@host.docker.internal:5498/vanderbot \
     migrate "$@"
+
+kill %1
