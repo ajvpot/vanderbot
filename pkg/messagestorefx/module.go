@@ -1,10 +1,9 @@
 package messagestorefx
 
 import (
-	"context"
 	"database/sql"
 	"encoding/json"
-	"time"
+	"errors"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/go-jet/jet/v2/postgres"
@@ -12,6 +11,7 @@ import (
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 
+	"github.com/ajvpot/vanderbot/internal/gen/vanderbot/public/model"
 	"github.com/ajvpot/vanderbot/internal/gen/vanderbot/public/table"
 )
 
@@ -85,8 +85,10 @@ func (p *store) logMessage(m *discordgo.Message, isDelete bool) {
 	}
 }
 
-func (p *store) handleMessageEdit(s *discordgo.Session, m *discordgo.MessageEdit) {
+func (p *store) handleMessageEdit(s *discordgo.Session, m *discordgo.MessageUpdate) {
 	p.Log.Info("chat edit", zap.Reflect("payload", m))
+
+	p.logMessage(m.Message, false)
 }
 
 func (p *store) handleMessageDelete(s *discordgo.Session, m *discordgo.MessageDelete) {
@@ -96,16 +98,19 @@ func (p *store) handleMessageDelete(s *discordgo.Session, m *discordgo.MessageDe
 }
 
 func (p *store) GetMessage(messageID string) (*discordgo.Message, error) {
-	ctx, cancel := context.WithTimeout(context.TODO(), time.Second*5)
-	defer cancel()
-
 	stmt := table.Message.SELECT(table.Message.Blob).WHERE(table.Message.MessageID.EQ(postgres.String(messageID)))
-	res, err := stmt.Rows(ctx, p.db)
+	var dest []struct {
+		model.Message
+	}
+	err := stmt.Query(p.db, &dest)
 	if err != nil {
-		p.Log.Error("error retreiving message", zap.Error(err))
+		p.Log.Error("error reading message", zap.Error(err))
 		return nil, err
 	}
 
-	var msg discordgo.Message
-	return &msg, res.Scan(&msg)
+	for _, row := range dest {
+		var msg discordgo.Message
+		return &msg, json.Unmarshal(row.Blob, &msg)
+	}
+	return nil, errors.New("no message found")
 }
