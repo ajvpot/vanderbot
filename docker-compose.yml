@@ -31,6 +31,8 @@ services:
       - db
     entrypoint: ["/usr/local/bin/graphile-migrate", "watch"]
     init: true
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
 
 volumes:

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# A wrapper for running graphile-migrate within a container
+
+docker-compose run \
+    -ti \
+    --user "$(id -u):$(id -g)" \
+    --rm \
+    --entrypoint /usr/local/bin/graphile-migrate \
+    -e DATABASE_URL=postgres://postgres:postgres@host.docker.internal:5498/vanderbot \
+    migrate "$@"
