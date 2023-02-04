@@ -5,7 +5,7 @@ import (
 
 	"github.com/ajvpot/blocksaas/app/mortar/chromefx"
 
-	"github.com/ajvpot/vanderbot/pkg/commands/ublockfx"
+	"github.com/ajvpot/vanderbot/pkg/command/ublockfx"
 	"github.com/ajvpot/vanderbot/pkg/configfx"
 	"github.com/ajvpot/vanderbot/pkg/dbfx"
 	"github.com/ajvpot/vanderbot/pkg/discordfx"
@@ -26,7 +26,7 @@ func main() {
 
 		chromefx.Module,
 
-		// commands
+		// command
 		ublockfx.Module,
 		voicefx.Module,
 		fedfx.Module,

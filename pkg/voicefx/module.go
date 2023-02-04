@@ -19,7 +19,7 @@ type Params struct {
 type Result struct {
 	fx.Out
 
-	Commands []*discordfx.ApplicationCommandWithHandler `group:"commands,flatten"`
+	Commands []*discordfx.ApplicationCommandWithHandler `group:"command,flatten"`
 }
 
 type voiceManagerState struct {

@@ -15,7 +15,7 @@ type NewCommandParams struct {
 }
 type NewCommandResult struct {
 	fx.Out
-	Command *discordfx.ApplicationCommandWithHandler `group:"commands"`
+	Command *discordfx.ApplicationCommandWithHandler `group:"command"`
 }
 
 func ptr[T any](t T) *T {

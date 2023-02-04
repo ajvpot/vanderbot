@@ -24,7 +24,7 @@ type ApplicationCommandWithHandler struct {
 type RegisterCommandsParams struct {
 	fx.In
 	Session   *discordgo.Session
-	Commands  []*ApplicationCommandWithHandler `group:"commands""`
+	Commands  []*ApplicationCommandWithHandler `group:"command""`
 	Log       *zap.Logger
 	Lifecycle fx.Lifecycle
 }
@@ -50,7 +50,7 @@ func RegisterCommands(p RegisterCommandsParams) error {
 
 	ctx, cancel := context.WithCancel(context.Background())
 
-	// Set up commands
+	// Set up command
 	for _, commandHandler := range p.Commands {
 		handlerMap[commandHandler.Command.Name] = commandHandler.Handler
 		p.Session.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
@@ -78,7 +78,7 @@ func RegisterCommands(p RegisterCommandsParams) error {
 		cancel()
 		registeredCommands, err := p.Session.ApplicationCommands(p.Session.State.User.ID, "")
 		if err != nil {
-			log.Fatalf("Could not fetch registered commands: %v", err)
+			log.Fatalf("Could not fetch registered command: %v", err)
 		}
 		for _, v := range registeredCommands {
 			err := p.Session.ApplicationCommandDelete(p.Session.State.User.ID, v.GuildID, v.ID)
