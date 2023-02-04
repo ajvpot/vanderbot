@@ -107,10 +107,10 @@ func (p *fedLogger) logMessageDelete(gid string, m *discordgo.MessageDelete) {
 
 	ch, err := p.Session.State.Channel(m.BeforeDelete.ChannelID)
 	if err != nil {
-		p.Session.ChannelMessageSend(string(gc.DeletedMessageLog.Channel), fmt.Sprintf("[fed] @%s deleted a message:\n%v", m.BeforeDelete.Author.String(), m.BeforeDelete.Content))
+		p.Session.ChannelMessageSend(string(gc.DeletedMessageLog.Channel), fmt.Sprintf("[fed] %s deleted a message:\n%v", m.BeforeDelete.Author.Mention(), m.BeforeDelete.Content))
 		return
 	}
-	p.Session.ChannelMessageSend(string(gc.DeletedMessageLog.Channel), fmt.Sprintf("[fed] @%s deleted a message in #%s:\n%v", m.BeforeDelete.Author.String(), ch.Name, m.BeforeDelete.Content))
+	p.Session.ChannelMessageSend(string(gc.DeletedMessageLog.Channel), fmt.Sprintf("[fed] %s deleted a message in #%s:\n%v", m.BeforeDelete.Author.Mention(), ch.Name, m.BeforeDelete.Content))
 }
 
 func (p *fedLogger) handlePresenceUpdate(s *discordgo.Session, m *discordgo.PresenceUpdate) {
@@ -140,7 +140,7 @@ func (p *fedLogger) handlePresenceUpdate(s *discordgo.Session, m *discordgo.Pres
 		return
 	}
 
-	s.ChannelMessageSend(string(gc.SpotifyLogChannel), fmt.Sprintf("[fed] @%s is listening to %s", u.User.Mention(), songName))
+	s.ChannelMessageSend(string(gc.SpotifyLogChannel), fmt.Sprintf("[fed] %s is listening to\n%s", u.User.Mention(), songName))
 }
 func spotifySongForPresence(p discordgo.Presence) string {
 	for _, activity := range p.Activities {
