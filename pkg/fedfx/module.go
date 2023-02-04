@@ -1,7 +1,6 @@
 package fedfx
 
 import (
-	"database/sql"
 	"fmt"
 	"strings"
 
@@ -22,7 +21,6 @@ type Params struct {
 	Log          *zap.Logger
 	Config       config.Provider
 	MessageStore messagefx.Store
-	DB           *sql.DB
 }
 
 type DeletedMessageLogConfig struct {
@@ -42,7 +40,6 @@ type fedLogger struct {
 	config       Config
 	messageStore messagefx.Store
 	lastSong     map[string]string
-	db           *sql.DB
 }
 
 func New(p Params) error {
@@ -52,7 +49,6 @@ func New(p Params) error {
 		config:       Config{},
 		lastSong:     make(map[string]string),
 		messageStore: p.MessageStore,
-		db:           p.DB,
 	}
 
 	err := p.Config.Get("fed").Populate(&pl.config)
@@ -60,28 +56,17 @@ func New(p Params) error {
 		return err
 	}
 
-	p.Session.AddHandler(pl.handleMessageCreate)
-	// todo broken
-	//p.Session.AddHandler(pl.handleMessageEdit)
-	p.Session.AddHandler(pl.handleMessageDelete)
 	p.Session.AddHandler(pl.handleMessageDeleteBulk)
 	p.Session.AddHandler(pl.handlePresenceUpdate)
 
 	return nil
 }
 
-func (p *fedLogger) handleMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
-	p.Log.Info("chat create", zap.Reflect("payload", m))
-}
-
-func (p *fedLogger) handleMessageEdit(s *discordgo.Session, m *discordgo.MessageEdit) {
-	p.Log.Info("chat edit", zap.Reflect("payload", m))
-}
-
 func (p *fedLogger) handleMessageDelete(s *discordgo.Session, m *discordgo.MessageDelete) {
 	p.logMessageDelete(m.GuildID, m)
 }
 
+// todo this doesn't work with the db chat store. refactor logMessageDelete to just take a message id.
 func (p *fedLogger) handleMessageDeleteBulk(s *discordgo.Session, m *discordgo.MessageDeleteBulk) {
 	for _, mid := range m.Messages {
 		msg, err := s.State.Message(m.ChannelID, mid)

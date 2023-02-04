@@ -7,7 +7,6 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/go-jet/jet/v2/postgres"
-	"go.uber.org/config"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 
@@ -19,11 +18,9 @@ var Module = fx.Options(fx.Provide(New))
 
 type Params struct {
 	fx.In
-	Session   *discordgo.Session
-	Log       *zap.Logger
-	Lifecycle fx.Lifecycle
-	Config    config.Provider
-	DB        *sql.DB
+	Session *discordgo.Session
+	Log     *zap.Logger
+	DB      *sql.DB
 }
 
 type Result struct {
@@ -35,27 +32,15 @@ type Store interface {
 	GetMessage(messageID string) (*discordgo.Message, error)
 }
 
-type Config struct {
-}
-
-const ConfigKey = "messageStore"
-
 type store struct {
-	Log    *zap.Logger
-	config Config
-	db     *sql.DB
+	Log *zap.Logger
+	db  *sql.DB
 }
 
 func New(p Params) (Result, error) {
 	s := store{
-		Log:    p.Log,
-		config: Config{},
-		db:     p.DB,
-	}
-
-	err := p.Config.Get(ConfigKey).Populate(&s.config)
-	if err != nil {
-		return Result{}, err
+		Log: p.Log,
+		db:  p.DB,
 	}
 
 	p.Session.AddHandler(s.handleMessageCreate)
