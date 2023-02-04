@@ -68,16 +68,16 @@ func New(p Params) (Result, error) {
 func (p *store) handleMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	p.Log.Info("chat create", zap.Reflect("payload", m))
 
-	p.logMessage(m.Message, false)
+	p.logMessage(m.Message)
 }
 
-func (p *store) logMessage(m *discordgo.Message, isDelete bool) {
+func (p *store) logMessage(m *discordgo.Message) {
 	serializedMessage, err := json.Marshal(m)
 	if err != nil {
 		p.Log.Error("error serializing created message", zap.Error(err))
 		return
 	}
-	insertStmt := table.Message.INSERT(table.Message.Blob, table.Message.IsDelete).VALUES(serializedMessage, isDelete)
+	insertStmt := table.Message.INSERT(table.Message.Blob).VALUES(serializedMessage)
 	_, err = insertStmt.Exec(p.db)
 	if err != nil {
 		p.Log.Error("error inserting message", zap.Error(err))
@@ -88,13 +88,13 @@ func (p *store) logMessage(m *discordgo.Message, isDelete bool) {
 func (p *store) handleMessageEdit(s *discordgo.Session, m *discordgo.MessageUpdate) {
 	p.Log.Info("chat edit", zap.Reflect("payload", m))
 
-	p.logMessage(m.Message, false)
+	p.logMessage(m.Message)
 }
 
 func (p *store) handleMessageDelete(s *discordgo.Session, m *discordgo.MessageDelete) {
 	p.Log.Info("chat delete", zap.Reflect("payload", m))
 
-	p.logMessage(m.Message, true)
+	p.logMessage(m.Message)
 }
 
 func (p *store) GetMessage(messageID string) (*discordgo.Message, error) {

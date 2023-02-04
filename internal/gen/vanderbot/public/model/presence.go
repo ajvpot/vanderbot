@@ -16,5 +16,5 @@ type Presence struct {
 	GuildID   string
 	Blob      json.RawMessage
 	CreatedAt time.Time
-	UserID    string
+	UserID    *string
 }
