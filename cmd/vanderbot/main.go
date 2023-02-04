@@ -10,7 +10,8 @@ import (
 	"github.com/ajvpot/vanderbot/pkg/dbfx"
 	"github.com/ajvpot/vanderbot/pkg/discordfx"
 	"github.com/ajvpot/vanderbot/pkg/fedfx"
-	"github.com/ajvpot/vanderbot/pkg/messagestorefx"
+	"github.com/ajvpot/vanderbot/pkg/store/messagefx"
+	"github.com/ajvpot/vanderbot/pkg/store/presencefx"
 	"github.com/ajvpot/vanderbot/pkg/systemfx"
 	"github.com/ajvpot/vanderbot/pkg/voicefx"
 	"github.com/ajvpot/vanderbot/pkg/zapfx"
@@ -29,7 +30,8 @@ func main() {
 		ublockfx.Module,
 		voicefx.Module,
 		fedfx.Module,
-		messagestorefx.Module,
+		messagefx.Module,
+		presencefx.Module,
 
 		// discord
 		discordfx.Module,

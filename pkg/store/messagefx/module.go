@@ -1,4 +1,4 @@
-package messagestorefx
+package messagefx
 
 import (
 	"database/sql"
