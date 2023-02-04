@@ -140,7 +140,7 @@ func (p *fedLogger) handlePresenceUpdate(s *discordgo.Session, m *discordgo.Pres
 		return
 	}
 
-	s.ChannelMessageSend(string(gc.SpotifyLogChannel), fmt.Sprintf("[fed] @%s is listening to %s", u.User.String(), songName))
+	s.ChannelMessageSend(string(gc.SpotifyLogChannel), fmt.Sprintf("[fed] @%s is listening to %s", u.User.Mention(), songName))
 }
 func spotifySongForPresence(p discordgo.Presence) string {
 	for _, activity := range p.Activities {
