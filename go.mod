@@ -11,7 +11,7 @@ require (
 	github.com/pion/rtp v1.7.13
 	github.com/pion/webrtc/v3 v3.1.50
 	go.uber.org/config v1.4.0
-	go.uber.org/fx v1.19.1
+	go.uber.org/fx v1.19.2
 	go.uber.org/zap v1.23.0
 )
 
