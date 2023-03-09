@@ -3,6 +3,7 @@ package fedfx
 import (
 	"fmt"
 	"strings"
+	"sync"
 
 	"github.com/bwmarrin/discordgo"
 	"go.uber.org/config"
@@ -40,6 +41,7 @@ type fedLogger struct {
 	config       Config
 	messageStore messagefx.Store
 	lastSong     map[string]string
+	lastSongLock sync.Mutex
 }
 
 func New(p Params) error {
@@ -126,13 +128,16 @@ func (p *fedLogger) handlePresenceUpdate(s *discordgo.Session, m *discordgo.Pres
 		return
 	}
 
+	p.lastSongLock.Lock()
 	if lastSong, ok := p.lastSong[m.User.ID]; ok {
 		if songName == lastSong {
 			p.Log.Debug("duplicate spotify presence")
+			p.lastSongLock.Unlock()
 			return
 		}
 	}
 	p.lastSong[m.User.ID] = songName
+	p.lastSongLock.Unlock()
 
 	u, err := s.State.Member(m.GuildID, m.User.ID)
 	if err != nil {
