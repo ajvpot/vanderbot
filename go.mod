@@ -11,7 +11,7 @@ require (
 	github.com/pion/rtp v1.7.13
 	github.com/pion/webrtc/v3 v3.1.50
 	go.uber.org/config v1.4.0
-	go.uber.org/fx v1.19.1
+	go.uber.org/fx v1.20.0
 	go.uber.org/zap v1.23.0
 )
 
@@ -37,7 +37,7 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/stretchr/testify v1.8.1 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
-	go.uber.org/dig v1.16.0 // indirect
+	go.uber.org/dig v1.17.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
 	golang.org/x/crypto v0.0.0-20221010152910-d6f0a8c073c2 // indirect
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616 // indirect
