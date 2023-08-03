@@ -16,7 +16,7 @@ var Message = newMessageTable("public", "message", "")
 type messageTable struct {
 	postgres.Table
 
-	//Columns
+	// Columns
 	Blob      postgres.ColumnString
 	CreatedAt postgres.ColumnString
 	EditedAt  postgres.ColumnString
@@ -70,7 +70,7 @@ func newMessageTableImpl(schemaName, tableName, alias string) messageTable {
 		ChannelIDColumn = postgres.StringColumn("channel_id")
 		GuildIDColumn   = postgres.StringColumn("guild_id")
 		allColumns      = postgres.ColumnList{BlobColumn, CreatedAtColumn, EditedAtColumn, MessageIDColumn, ChannelIDColumn, GuildIDColumn}
-		mutableColumns  = postgres.ColumnList{BlobColumn, CreatedAtColumn, EditedAtColumn, MessageIDColumn, ChannelIDColumn, GuildIDColumn}
+		mutableColumns  = postgres.ColumnList{BlobColumn}
 	)
 
 	return messageTable{
