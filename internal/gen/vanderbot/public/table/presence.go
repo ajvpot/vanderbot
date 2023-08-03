@@ -16,7 +16,7 @@ var Presence = newPresenceTable("public", "presence", "")
 type presenceTable struct {
 	postgres.Table
 
-	//Columns
+	// Columns
 	GuildID   postgres.ColumnString
 	Blob      postgres.ColumnString
 	CreatedAt postgres.ColumnTimestampz
@@ -66,7 +66,7 @@ func newPresenceTableImpl(schemaName, tableName, alias string) presenceTable {
 		CreatedAtColumn = postgres.TimestampzColumn("created_at")
 		UserIDColumn    = postgres.StringColumn("user_id")
 		allColumns      = postgres.ColumnList{GuildIDColumn, BlobColumn, CreatedAtColumn, UserIDColumn}
-		mutableColumns  = postgres.ColumnList{GuildIDColumn, BlobColumn, CreatedAtColumn, UserIDColumn}
+		mutableColumns  = postgres.ColumnList{GuildIDColumn, BlobColumn, CreatedAtColumn}
 	)
 
 	return presenceTable{
