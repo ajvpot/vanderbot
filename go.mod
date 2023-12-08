@@ -6,7 +6,7 @@ require (
 	github.com/ajvpot/blocksaas v0.0.0-20211225041512-7603a7930e46
 	github.com/bwmarrin/discordgo v0.27.1
 	github.com/go-jet/jet/v2 v2.10.1
-	github.com/go-masonry/mortar v1.0.32
+	github.com/go-masonry/mortar v1.0.34
 	github.com/lib/pq v1.10.9
 	github.com/pion/rtp v1.8.0
 	github.com/pion/rtp/v2 v2.0.0
