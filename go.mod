@@ -10,7 +10,7 @@ require (
 	github.com/lib/pq v1.10.9
 	github.com/pion/rtp v1.8.0
 	github.com/pion/rtp/v2 v2.0.0
-	github.com/pion/webrtc/v3 v3.2.14
+	github.com/pion/webrtc/v3 v3.3.4
 	go.uber.org/config v1.4.0
 	go.uber.org/fx v1.20.0
 	go.uber.org/zap v1.25.0
