@@ -12,7 +12,7 @@ require (
 	github.com/pion/rtp/v2 v2.0.0
 	github.com/pion/webrtc/v3 v3.2.14
 	go.uber.org/config v1.4.0
-	go.uber.org/fx v1.20.0
+	go.uber.org/fx v1.23.0
 	go.uber.org/zap v1.25.0
 )
 
