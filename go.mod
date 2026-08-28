@@ -7,7 +7,7 @@ require (
 	github.com/bwmarrin/discordgo v0.27.1
 	github.com/go-jet/jet/v2 v2.10.1
 	github.com/go-masonry/mortar v1.0.32
-	github.com/lib/pq v1.10.9
+	github.com/lib/pq v1.12.3
 	github.com/pion/rtp v1.8.0
 	github.com/pion/rtp/v2 v2.0.0
 	github.com/pion/webrtc/v3 v3.2.14
